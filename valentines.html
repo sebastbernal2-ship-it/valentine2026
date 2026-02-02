@@ -649,8 +649,30 @@
         const letterClosed = document.getElementById('letterClosed');
         const letterOpen = document.getElementById('letterOpen');
 
+        // Taco refs
+        const tacoYes = document.getElementById('tacoYes');
+        const tacoNo = document.getElementById('tacoNo');
+        const tacoQuestion = document.getElementById('tacoQuestion');
+        const tacoAttempts = document.getElementById('tacoAttempts');
+        const tacoNoCount = document.getElementById('tacoNoCount');
+
+        // Sushi refs
+        const sushiYes = document.getElementById('sushiYes');
+        const sushiNo = document.getElementById('sushiNo');
+        const sushiQuestion = document.getElementById('sushiQuestion');
+        const sushiAttempts = document.getElementById('sushiAttempts');
+        const sushiNoCount = document.getElementById('sushiNoCount');
+
         let tacoDone = false;
         let sushiDone = false;
+
+        let tacoNoClicks = 0;
+        let tacoNoScale = 1;
+        let tacoYesScale = 1;
+
+        let sushiNoClicks = 0;
+        let sushiNoScale = 1;
+        let sushiYesScale = 1;
 
         function enterMode(mode) {
             selectionScreen.style.display = 'none';
@@ -668,8 +690,43 @@
         }
 
         function goBack() {
-            // full reset so all text, counters, and scales go back to fresh
-            window.location.reload();
+            // Hide all modes
+            tacoScreen.style.display = 'none';
+            sushiScreen.style.display = 'none';
+            letterScreen.style.display = 'none';
+
+            // Show main menu
+            selectionScreen.style.display = 'flex';
+
+            // Reset Taco UI
+            tacoNoClicks = 0;
+            tacoNoScale = 1;
+            tacoYesScale = 1;
+            tacoNoCount.textContent = '0';
+            tacoAttempts.classList.remove('show');
+            tacoNo.style.opacity = '1';
+            tacoNo.style.pointerEvents = 'auto';
+            tacoNo.style.transform = 'scale(1)';
+            tacoYes.style.transform = 'scale(1)';
+            tacoQuestion.textContent = "Will you taco 'bout being my Valentine? 🧀";
+
+            // Reset Sushi UI
+            sushiNoClicks = 0;
+            sushiNoScale = 1;
+            sushiYesScale = 1;
+            sushiNoCount.textContent = '0';
+            sushiAttempts.classList.remove('show');
+            sushiNo.style.opacity = '1';
+            sushiNo.style.pointerEvents = 'auto';
+            sushiNo.style.transform = 'scale(1)';
+            sushiYes.style.transform = 'scale(1)';
+            sushiQuestion.textContent = "Will you sushi my Valentine and roll with me? 💖";
+
+            // Reset Letter UI (but keep unlock state)
+            const flap = document.querySelector('.envelope-flap');
+            flap.classList.remove('open');
+            letterClosed.style.display = 'block';
+            letterOpen.style.display = 'none';
         }
 
         function checkUnlock() {
@@ -700,16 +757,6 @@
         }
 
         // Taco logic
-        const tacoYes = document.getElementById('tacoYes');
-        const tacoNo = document.getElementById('tacoNo');
-        const tacoQuestion = document.getElementById('tacoQuestion');
-        const tacoAttempts = document.getElementById('tacoAttempts');
-        const tacoNoCount = document.getElementById('tacoNoCount');
-
-        let tacoNoClicks = 0;
-        let tacoNoScale = 1;
-        let tacoYesScale = 1;
-
         tacoYes.addEventListener('click', () => {
             modalEmoji.textContent = '🌮💕🎉';
             modalTitle.textContent = "Let's taco 'bout love! 🧡";
@@ -752,16 +799,6 @@
         });
 
         // Sushi logic
-        const sushiYes = document.getElementById('sushiYes');
-        const sushiNo = document.getElementById('sushiNo');
-        const sushiQuestion = document.getElementById('sushiQuestion');
-        const sushiAttempts = document.getElementById('sushiAttempts');
-        const sushiNoCount = document.getElementById('sushiNoCount');
-
-        let sushiNoClicks = 0;
-        let sushiNoScale = 1;
-        let sushiYesScale = 1;
-
         sushiYes.addEventListener('click', () => {
             modalEmoji.textContent = '🍣💕🎉';
             modalTitle.textContent = 'You’re soy amazing! 💖';

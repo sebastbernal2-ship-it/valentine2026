@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💕</title>
+    <style>
+        :root {
+            --color-pink: #ff69b4;
+            --color-pink-light: #ffb3d9;
+            --color-pink-dark: #ff1493;
+            --color-red: #ff0066;
+            --color-white: #ffffff;
+            --color-cream: #fff5f7;
+            --color-text: #2d2d2d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Floating hearts animation */
+        .heart-bg {
+            position: absolute;
+            font-size: 20px;
+            animation: float 10s infinite;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background: var(--color-white);
+            border-radius: 30px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: var(--color-pink-dark);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.2);
+        }
+
+        .heart-icon {
+            font-size: 80px;
+            margin: 20px 0;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            10%, 30% {
+                transform: scale(1.1);
+            }
+            20%, 40% {
+                transform: scale(1);
+            }
+        }
+
+        .question {
+            font-size: 1.8em;
+            color: var(--color-text);
+            margin: 30px 0;
+            font-weight: 600;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, var(--color-pink) 0%, var(--color-red) 100%);
+            color: var(--color-white);
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.4);
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(255, 105, 180, 0.6);
+        }
+
+        .btn-no {
+            background: var(--color-cream);
+            color: var(--color-text);
+            border: 2px solid var(--color-pink-light);
+            position: relative;
+        }
+
+        .btn-no:hover {
+            background: var(--color-pink-light);
+        }
+
+        /* Success modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            animation: modalSlideIn 0.5s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal h2 {
+            font-size: 2.5em;
+            color: var(--color-pink-dark);
+            margin-bottom: 20px;
+        }
+
+        .modal p {
+            font-size: 1.3em;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .celebration {
+            font-size: 60px;
+            margin: 20px 0;
+        }
+
+        /* Counter display */
+        .attempt-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.9em;
+            color: var(--color-pink);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .attempt-counter.show {
+            opacity: 1;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+            .question {
+                font-size: 1.4em;
+            }
+            .container {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating hearts background -->
+    <div id="hearts-container"></div>
+
+    <!-- Main container -->
+    <div class="container">
+        <div class="attempt-counter" id="attemptCounter">
+            No clicks: <span id="noCount">0</span> 😏
+        </div>
+
+        <h1>Hey Beautiful 💕</h1>
+        
+        <div class="heart-icon">❤️</div>
+        
+        <p class="question">Will you be my Valentine?</p>
+        
+        <div class="buttons">
+            <button class="btn btn-yes" id="yesBtn">Yes! 💖</button>
+            <button class="btn btn-no" id="noBtn">No</button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="celebration">🎉💕🎊</div>
+            <h2>Yay! 💖</h2>
+            <p>You just made me the happiest person alive!</p>
+            <p style="margin-top: 20px;">I can't wait to spend Valentine's Day with you! ❤️</p>
+            <div class="celebration">💐🌹💝</div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating hearts
+        const heartsContainer = document.getElementById('hearts-container');
+        const heartSymbols = ['❤️', '💕', '💖', '💗', '💝', '💘'];
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-bg';
+            heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            heart.style.animationDelay = Math.random() * 5 + 's';
+            heartsContainer.appendChild(heart);
+            
+            setTimeout(() => heart.remove(), 10000);
+        }
+
+        // Generate hearts continuously
+        setInterval(createHeart, 500);
+        for (let i = 0; i < 15; i++) {
+            setTimeout(createHeart, i * 300);
+        }
+
+        // Button logic
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const modal = document.getElementById('successModal');
+        const attemptCounter = document.getElementById('attemptCounter');
+        const noCount = document.getElementById('noCount');
+        
+        let noClickCount = 0;
+        let noBtnSize = 1;
+        let yesBtnSize = 1;
+
+        // Yes button - show success modal
+        yesBtn.addEventListener('click', () => {
+            modal.style.display = 'flex';
+            // Add confetti effect
+            createConfetti();
+        });
+
+        // No button - make it harder to click
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            noClickCount++;
+            noCount.textContent = noClickCount;
+            attemptCounter.classList.add('show');
+            
+            // Shrink no button
+            noBtnSize *= 0.8;
+            noBtn.style.transform = `scale(${noBtnSize})`;
+            
+            // Grow yes button
+            yesBtnSize *= 1.15;
+            yesBtn.style.transform = `scale(${yesBtnSize})`;
+            
+            // Move no button to random position on larger screens
+            if (window.innerWidth > 600) {
+                const container = document.querySelector('.container');
+                const containerRect = container.getBoundingClientRect();
+                const maxX = containerRect.width - noBtn.offsetWidth - 100;
+                const maxY = containerRect.height - noBtn.offsetHeight - 100;
+                
+                const randomX = Math.random() * maxX;
+                const randomY = Math.random() * maxY;
+                
+                noBtn.style.position = 'absolute';
+                noBtn.style.left = randomX + 'px';
+                noBtn.style.top = randomY + 'px';
+            }
+            
+            // Add pleading messages
+            const messages = [
+                "Are you sure? 🥺",
+                "Please? Pretty please? 💕",
+                "Come on, don't break my heart! 💔",
+                "I promise to be the best Valentine ever! 🌹",
+                "One more chance? 🙏"
+            ];
+            
+            if (noClickCount <= messages.length) {
+                const question = document.querySelector('.question');
+                question.textContent = messages[noClickCount - 1];
+            }
+            
+            // If they click no too many times, make it disappear
+            if (noClickCount >= 5) {
+                noBtn.style.opacity = '0';
+                noBtn.style.pointerEvents = 'none';
+                document.querySelector('.question').textContent = "I knew you'd say yes! 💖";
+            }
+        });
+
+        // Confetti effect
+        function createConfetti() {
+            const colors = ['#ff69b4', '#ff1493', '#ff0066', '#ffb3d9', '#ffc0cb'];
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-10px';
+                    confetti.style.opacity = '1';
+                    confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                    confetti.style.transition = 'all 3s ease-out';
+                    confetti.style.zIndex = '1000';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.style.top = window.innerHeight + 'px';
+                        confetti.style.opacity = '0';
+                        confetti.style.transform = 'rotate(' + (Math.random() * 720) + 'deg)';
+                    }, 50);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Close modal on click
+        modal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
+

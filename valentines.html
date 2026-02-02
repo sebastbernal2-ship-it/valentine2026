@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Will You Be My Valentine? 💕</title>
     <style>
         :root {
@@ -24,101 +25,58 @@
         html, body {
             height: 100vh;
             width: 100vw;
-            overflow: hidden; /* NO scrolling allowed */
-            position: fixed; /* Lock position */
+            overflow: hidden;
         }
 
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
             background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
+            position: relative;
+        }
+
+        /* Shared center container for modes */
+        .center-wrapper {
+            height: 100vh;
+            width: 100vw;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
         }
 
-        /* Floating hearts animation */
-        .heart-bg {
-            position: absolute;
-            font-size: 20px;
-            animation: float 10s infinite;
-            opacity: 0.3;
-            pointer-events: none;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.3;
-            }
-            90% {
-                opacity: 0.3;
-            }
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        .container {
+        .card {
             background: var(--color-white);
             border-radius: 25px;
-            padding: 25px 20px; /* Reduced padding */
+            padding: 25px 20px;
             text-align: center;
-            box-shadow: 0 15px 50px rgba(255, 105, 180, 0.3);
-            max-width: 350px; /* Smaller max width for mobile */
+            box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+            max-width: 360px;
             width: 90%;
             position: relative;
-            z-index: 10;
-            overflow: hidden; /* No scrolling */
+            overflow: hidden;
         }
 
         h1 {
-            font-size: 1.6em; /* Smaller for mobile */
-            color: var(--color-pink-dark);
+            font-size: 1.6em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.2);
-        }
-
-        .heart-icon {
-            font-size: 50px; /* Smaller */
-            margin: 10px 0;
-            animation: heartbeat 1.5s infinite;
-        }
-
-        @keyframes heartbeat {
-            0%, 100% {
-                transform: scale(1);
-            }
-            10%, 30% {
-                transform: scale(1.1);
-            }
-            20%, 40% {
-                transform: scale(1);
-            }
         }
 
         .question {
-            font-size: 1.2em; /* Smaller */
-            color: var(--color-text);
+            font-size: 1.3em;
             margin: 15px 0;
             font-weight: 600;
         }
 
         .buttons {
             display: flex;
-            gap: 15px;
             justify-content: center;
-            margin-top: 20px; /* Reduced */
+            gap: 15px;
+            margin-top: 20px;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 12px 30px; /* Smaller buttons */
-            font-size: 1em; /* Smaller font */
+            padding: 12px 30px;
+            font-size: 1em;
             border: none;
             border-radius: 50px;
             cursor: pointer;
@@ -134,7 +92,7 @@
         }
 
         .btn-yes:hover {
-            transform: scale(1.1);
+            transform: scale(1.08);
             box-shadow: 0 8px 25px rgba(255, 105, 180, 0.6);
         }
 
@@ -142,73 +100,12 @@
             background: var(--color-cream);
             color: var(--color-text);
             border: 2px solid var(--color-pink-light);
-            position: relative;
         }
 
-        .btn-no:hover {
-            background: var(--color-pink-light);
-        }
-
-        /* Success modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            overflow: hidden; /* No scrolling */
-        }
-
-        .modal-content {
-            background: var(--color-white);
-            padding: 25px 20px; /* Reduced padding */
-            border-radius: 25px;
-            text-align: center;
-            max-width: 320px; /* Smaller */
-            width: 85%;
-            animation: modalSlideIn 0.5s ease;
-            overflow: hidden; /* No scrolling */
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                transform: scale(0.7);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .modal h2 {
-            font-size: 1.8em; /* Smaller */
-            color: var(--color-pink-dark);
-            margin-bottom: 10px;
-        }
-
-        .modal p {
-            font-size: 1em; /* Smaller */
-            color: var(--color-text);
-            line-height: 1.4;
-            margin: 8px 0; /* Reduced */
-        }
-
-        .celebration {
-            font-size: 35px; /* Smaller */
-            margin: 10px 0;
-        }
-
-        /* Counter display */
         .attempt-counter {
             position: absolute;
             top: 10px;
-            right: 10px;
+            right: 12px;
             font-size: 0.8em;
             color: var(--color-pink);
             opacity: 0;
@@ -219,199 +116,456 @@
             opacity: 1;
         }
 
-        /* Responsive for larger screens - allow slightly bigger */
-        @media (min-width: 600px) {
-            .container {
-                max-width: 450px;
-                padding: 35px 30px;
-            }
-            h1 {
-                font-size: 2em;
-            }
-            .heart-icon {
-                font-size: 70px;
-            }
-            .question {
-                font-size: 1.5em;
-            }
-            .btn {
-                padding: 15px 40px;
-                font-size: 1.2em;
-            }
-            .modal-content {
-                max-width: 400px;
-                padding: 40px;
-            }
-            .modal h2 {
-                font-size: 2.2em;
-            }
-            .modal p {
-                font-size: 1.2em;
-            }
-            .celebration {
-                font-size: 50px;
-            }
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 25px 20px;
+            border-radius: 25px;
+            text-align: center;
+            max-width: 320px;
+            width: 85%;
+        }
+
+        .modal h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .modal p {
+            font-size: 1em;
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+
+        .celebration {
+            font-size: 40px;
+            margin: 8px 0;
+        }
+
+        /* Selection screen */
+
+        .selection-screen {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            position: relative;
+        }
+
+        .half {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .half::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0.2;
+        }
+
+        .half-left {
+            background: linear-gradient(135deg, #ffebc7 0%, #ffb347 100%);
+        }
+
+        .half-left::before {
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(255,255,255,0.6) 0, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.4) 0, transparent 45%);
+        }
+
+        .half-right {
+            background: linear-gradient(135deg, #ffe0e0 0%, #ff6b6b 100%);
+        }
+
+        .half-right::before {
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.6) 0, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.4) 0, transparent 45%);
+        }
+
+        .half:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+        }
+
+        .choice-content {
+            position: relative;
+            text-align: center;
+            color: #fff;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+            padding: 10px;
+        }
+
+        .choice-emoji {
+            font-size: 80px;
+            margin-bottom: 10px;
+        }
+
+        .choice-title {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .choice-sub {
+            font-size: 1.1em;
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+
+        .choose-label {
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #ff1493;
+            text-shadow: 0 0 8px rgba(255,255,255,0.9);
+            z-index: 10;
+        }
+
+        /* Taco mode theming */
+
+        .taco-bg {
+            background: linear-gradient(135deg, #fff8e7 0%, #ffe4b5 40%, #ff9a3c 100%);
+        }
+
+        .taco-card {
+            border: 4px solid #ff9a3c;
+            box-shadow: 0 18px 50px rgba(255, 154, 60, 0.5);
+        }
+
+        .taco-h1 {
+            color: #e85d04;
+        }
+
+        .taco-pun {
+            font-size: 0.95em;
+            color: #ff6b35;
+            font-style: italic;
+            margin: 10px 0;
+            background: #fff3e6;
+            padding: 8px;
+            border-radius: 15px;
+        }
+
+        .taco-emoji-big {
+            font-size: 70px;
+            margin: 8px 0;
+        }
+
+        /* Sushi mode theming */
+
+        .sushi-bg {
+            background: linear-gradient(135deg, #fff0f0 0%, #ffe0e0 40%, #c92a2a 100%);
+        }
+
+        .sushi-card {
+            border: 4px solid #ff6b6b;
+            box-shadow: 0 18px 50px rgba(201, 42, 42, 0.5);
+        }
+
+        .sushi-h1 {
+            color: #c92a2a;
+        }
+
+        .sushi-pun {
+            font-size: 0.95em;
+            color: #c92a2a;
+            font-style: italic;
+            margin: 10px 0;
+            background: #ffe5e5;
+            padding: 8px;
+            border-radius: 15px;
+        }
+
+        .sushi-emoji-big {
+            font-size: 70px;
+            margin: 8px 0;
+        }
+
+        /* Back button inside modes */
+        .back-btn {
+            position: absolute;
+            top: 12px;
+            left: 14px;
+            font-size: 0.8em;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 6px 12px;
+            border: 1px solid #ffb3d9;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .choice-emoji { font-size: 60px; }
+            .choice-title { font-size: 1.6em; }
+            .choice-sub { font-size: 1em; }
+            .choose-label { font-size: 1.2em; }
+            .card { max-width: 340px; }
         }
     </style>
 </head>
 <body>
-    <!-- Floating hearts background -->
-    <div id="hearts-container"></div>
-
-    <!-- Main container -->
-    <div class="container">
-        <div class="attempt-counter" id="attemptCounter">
-            No clicks: <span id="noCount">0</span> 😏
+    <!-- Selection screen -->
+    <div id="selectionScreen" class="selection-screen">
+        <div class="choose-label">Choose your flavor of love 💕</div>
+        <div class="half half-left" onclick="enterMode('taco')">
+            <div class="choice-content">
+                <div class="choice-emoji">🌮</div>
+                <div class="choice-title">Taco</div>
+                <div class="choice-sub">For the spicy lovers 🌶️</div>
+            </div>
         </div>
-
-        <h1>Hey Beautiful 💕</h1>
-        
-        <div class="heart-icon">❤️</div>
-        
-        <p class="question">Will you be my Valentine?</p>
-        
-        <div class="buttons">
-            <button class="btn btn-yes" id="yesBtn">Yes! 💖</button>
-            <button class="btn btn-no" id="noBtn">No</button>
+        <div class="half half-right" onclick="enterMode('sushi')">
+            <div class="choice-content">
+                <div class="choice-emoji">🍣</div>
+                <div class="choice-title">Sushi</div>
+                <div class="choice-sub">For the raw romance 🥢</div>
+            </div>
         </div>
     </div>
 
-    <!-- Success Modal -->
+    <!-- Taco mode -->
+    <div id="tacoScreen" style="display:none;">
+        <div class="center-wrapper taco-bg">
+            <div class="card taco-card">
+                <button class="back-btn" onclick="goBack()">← Back</button>
+                <div class="attempt-counter" id="tacoAttempts">
+                    No clicks: <span id="tacoNoCount">0</span> 🌮
+                </div>
+                <h1 class="taco-h1">Hey Hot Stuff! 🌶️</h1>
+                <div class="taco-emoji-big">🌮</div>
+                <p class="taco-pun">
+                    "You've stolen a pizza my heart... but I really want to taco 'bout us." 🍕💛
+                </p>
+                <p class="question" id="tacoQuestion">
+                    Will you taco 'bout being my Valentine? 🧀
+                </p>
+                <div class="buttons">
+                    <button class="btn btn-yes" id="tacoYes">Yes! I'm nacho average Valentine 🧀</button>
+                    <button class="btn btn-no" id="tacoNo">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sushi mode -->
+    <div id="sushiScreen" style="display:none;">
+        <div class="center-wrapper sushi-bg">
+            <div class="card sushi-card">
+                <button class="back-btn" onclick="goBack()">← Back</button>
+                <div class="attempt-counter" id="sushiAttempts">
+                    No clicks: <span id="sushiNoCount">0</span> 🍣
+                </div>
+                <h1 class="sushi-h1">Hey Cutie Roll 💕</h1>
+                <div class="sushi-emoji-big">🍣</div>
+                <p class="sushi-pun">
+                    "I’m soy into you... and I want our love to roll on forever." 🥢
+                </p>
+                <p class="question" id="sushiQuestion">
+                    Will you sushi my Valentine and roll with me? 💖
+                </p>
+                <div class="buttons">
+                    <button class="btn btn-yes" id="sushiYes">Yes! I’m hooked 🐟</button>
+                    <button class="btn btn-no" id="sushiNo">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shared success modal -->
     <div class="modal" id="successModal">
-        <div class="modal-content">
-            <div class="celebration">🎉💕🎊</div>
-            <h2>Yay! 💖</h2>
-            <p>You just made me the happiest person alive!</p>
-            <p style="margin-top: 15px;">I can't wait to spend Valentine's Day with you! ❤️</p>
-            <div class="celebration">💐🌹💝</div>
+        <div class="modal-content" id="modalContent">
+            <div class="celebration" id="modalEmoji">🎉💕🎊</div>
+            <h2 id="modalTitle">Yay! 💖</h2>
+            <p id="modalLine1">You just made me the happiest person alive!</p>
+            <p id="modalLine2">I can't wait to spend Valentine's Day with you! ❤️</p>
+            <div class="celebration" id="modalEmojiBottom">💐🌹💝</div>
         </div>
     </div>
 
     <script>
-        // Create floating hearts
-        const heartsContainer = document.getElementById('hearts-container');
-        const heartSymbols = ['❤️', '💕', '💖', '💗', '💝', '💘'];
-        
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.className = 'heart-bg';
-            heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
-            heart.style.left = Math.random() * 100 + '%';
-            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            heart.style.animationDelay = Math.random() * 5 + 's';
-            heartsContainer.appendChild(heart);
-            
-            setTimeout(() => heart.remove(), 10000);
-        }
-
-        // Generate hearts continuously
-        setInterval(createHeart, 500);
-        for (let i = 0; i < 15; i++) {
-            setTimeout(createHeart, i * 300);
-        }
-
-        // Button logic
-        const yesBtn = document.getElementById('yesBtn');
-        const noBtn = document.getElementById('noBtn');
+        const selectionScreen = document.getElementById('selectionScreen');
+        const tacoScreen = document.getElementById('tacoScreen');
+        const sushiScreen = document.getElementById('sushiScreen');
         const modal = document.getElementById('successModal');
-        const attemptCounter = document.getElementById('attemptCounter');
-        const noCount = document.getElementById('noCount');
-        
-        let noClickCount = 0;
-        let noBtnSize = 1;
-        let yesBtnSize = 1;
+        const modalEmoji = document.getElementById('modalEmoji');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalLine1 = document.getElementById('modalLine1');
+        const modalLine2 = document.getElementById('modalLine2');
+        const modalEmojiBottom = document.getElementById('modalEmojiBottom');
 
-        // Yes button - show success modal
-        yesBtn.addEventListener('click', () => {
-            modal.style.display = 'flex';
-            createConfetti();
-        });
+        let currentMode = null;
 
-        // No button - make it harder to click
-        noBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            noClickCount++;
-            noCount.textContent = noClickCount;
-            attemptCounter.classList.add('show');
-            
-            // Shrink no button
-            noBtnSize *= 0.8;
-            noBtn.style.transform = `scale(${noBtnSize})`;
-            
-            // Grow yes button
-            yesBtnSize *= 1.15;
-            yesBtn.style.transform = `scale(${yesBtnSize})`;
-            
-            // Move no button to random position on larger screens
-            if (window.innerWidth > 600) {
-                const container = document.querySelector('.container');
-                const containerRect = container.getBoundingClientRect();
-                const maxX = containerRect.width - noBtn.offsetWidth - 80;
-                const maxY = containerRect.height - noBtn.offsetHeight - 80;
-                
-                const randomX = Math.random() * maxX;
-                const randomY = Math.random() * maxY;
-                
-                noBtn.style.position = 'absolute';
-                noBtn.style.left = randomX + 'px';
-                noBtn.style.top = randomY + 'px';
-            }
-            
-            // Add pleading messages
-            const messages = [
-                "Are you sure? 🥺",
-                "Please? Pretty please? 💕",
-                "Come on, don't break my heart! 💔",
-                "I promise to be the best Valentine ever! 🌹",
-                "One more chance? 🙏"
-            ];
-            
-            if (noClickCount <= messages.length) {
-                const question = document.querySelector('.question');
-                question.textContent = messages[noClickCount - 1];
-            }
-            
-            // If they click no too many times, make it disappear
-            if (noClickCount >= 5) {
-                noBtn.style.opacity = '0';
-                noBtn.style.pointerEvents = 'none';
-                document.querySelector('.question').textContent = "I knew you'd say yes! 💖";
-            }
-        });
-
-        // Confetti effect
-        function createConfetti() {
-            const colors = ['#ff69b4', '#ff1493', '#ff0066', '#ffb3d9', '#ffc0cb'];
-            for (let i = 0; i < 100; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.style.position = 'fixed';
-                    confetti.style.width = '10px';
-                    confetti.style.height = '10px';
-                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.left = Math.random() * window.innerWidth + 'px';
-                    confetti.style.top = '-10px';
-                    confetti.style.opacity = '1';
-                    confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
-                    confetti.style.transition = 'all 3s ease-out';
-                    confetti.style.zIndex = '1000';
-                    document.body.appendChild(confetti);
-                    
-                    setTimeout(() => {
-                        confetti.style.top = window.innerHeight + 'px';
-                        confetti.style.opacity = '0';
-                        confetti.style.transform = 'rotate(' + (Math.random() * 720) + 'deg)';
-                    }, 50);
-                    
-                    setTimeout(() => confetti.remove(), 3000);
-                }, i * 30);
+        function enterMode(mode) {
+            currentMode = mode;
+            selectionScreen.style.display = 'none';
+            if (mode === 'taco') {
+                tacoScreen.style.display = 'block';
+                sushiScreen.style.display = 'none';
+            } else {
+                sushiScreen.style.display = 'block';
+                tacoScreen.style.display = 'none';
             }
         }
 
-        // Close modal on click
+        function goBack() {
+            currentMode = null;
+            tacoScreen.style.display = 'none';
+            sushiScreen.style.display = 'none';
+            selectionScreen.style.display = 'flex';
+        }
+
+        // Taco logic
+        const tacoYes = document.getElementById('tacoYes');
+        const tacoNo = document.getElementById('tacoNo');
+        const tacoQuestion = document.getElementById('tacoQuestion');
+        const tacoAttempts = document.getElementById('tacoAttempts');
+        const tacoNoCount = document.getElementById('tacoNoCount');
+
+        let tacoNoClicks = 0;
+        let tacoNoScale = 1;
+        let tacoYesScale = 1;
+
+        tacoYes.addEventListener('click', () => {
+            modalEmoji.textContent = '🌮💕🎉';
+            modalTitle.textContent = "Let's taco 'bout love! 🧡";
+            modalLine1.textContent = "You guac my world! 🥑";
+            modalLine2.textContent = "Can't wait to spice up Valentine's Day with you! 🌶️";
+            modalEmojiBottom.textContent = '🧀🌮💖';
+            modal.style.display = 'flex';
+            createConfetti(['#ff9a3c', '#ffd8a8', '#e85d04', '#ff6b35']);
+        });
+
+        tacoNo.addEventListener('click', (e) => {
+            e.preventDefault();
+            tacoNoClicks++;
+            tacoNoCount.textContent = tacoNoClicks;
+            tacoAttempts.classList.add('show');
+
+            tacoNoScale *= 0.75;
+            tacoYesScale *= 1.18;
+            tacoNo.style.transform = `scale(${tacoNoScale})`;
+            tacoYes.style.transform = `scale(${tacoYesScale})`;
+
+            const msgs = [
+                "Are you sure? 🥺",
+                "Don't be a sour cream! 🍋",
+                "I'm kind of a big dill! 🥒",
+                "Lettuce be together! 🥬",
+                "You’re breaking my shells! 🥚"
+            ];
+            if (tacoNoClicks <= msgs.length) {
+                tacoQuestion.textContent = msgs[tacoNoClicks - 1];
+            }
+
+            if (tacoNoClicks >= 4) {
+                tacoNo.style.opacity = '0';
+                tacoNo.style.pointerEvents = 'none';
+                tacoQuestion.textContent = "I knew you were salsa-mazing! 💃";
+            }
+        });
+
+        // Sushi logic
+        const sushiYes = document.getElementById('sushiYes');
+        const sushiNo = document.getElementById('sushiNo');
+        const sushiQuestion = document.getElementById('sushiQuestion');
+        const sushiAttempts = document.getElementById('sushiAttempts');
+        const sushiNoCount = document.getElementById('sushiNoCount');
+
+        let sushiNoClicks = 0;
+        let sushiNoScale = 1;
+        let sushiYesScale = 1;
+
+        sushiYes.addEventListener('click', () => {
+            modalEmoji.textContent = '🍣💕🎉';
+            modalTitle.textContent = 'You’re soy amazing! 💖';
+            modalLine1.textContent = "I'm completely hooked on you 🐟";
+            modalLine2.textContent = "Let’s roll through Valentine’s Day together! 🥢";
+            modalEmojiBottom.textContent = '🍣💘🌊';
+            modal.style.display = 'flex';
+            createConfetti(['#ff6b6b', '#ffc9c9', '#c92a2a', '#ffa8a8']);
+        });
+
+        sushiNo.addEventListener('click', (e) => {
+            e.preventDefault();
+            sushiNoClicks++;
+            sushiNoCount.textContent = sushiNoClicks;
+            sushiAttempts.classList.add('show');
+
+            sushiNoScale *= 0.75;
+            sushiYesScale *= 1.18;
+            sushiNo.style.transform = `scale(${sushiNoScale})`;
+            sushiYes.style.transform = `scale(${sushiYesScale})`;
+
+            const msgs = [
+                "Are you sure? 🥺",
+                "Don't miso cold to me 🥺",
+                "I’m on a roll here! 🍣",
+                "You’re my perfect catch 🐟",
+                "Let’s maki this official 💕"
+            ];
+            if (sushiNoClicks <= msgs.length) {
+                sushiQuestion.textContent = msgs[sushiNoClicks - 1];
+            }
+
+            if (sushiNoClicks >= 4) {
+                sushiNo.style.opacity = '0';
+                sushiNo.style.pointerEvents = 'none';
+                sushiQuestion.textContent = "I knew you’d roll with me! 💘";
+            }
+        });
+
+        // Shared modal close
         modal.addEventListener('click', () => {
             modal.style.display = 'none';
         });
+
+        // Simple confetti generator
+        function createConfetti(colors) {
+            for (let i = 0; i < 60; i++) {
+                setTimeout(() => {
+                    const c = document.createElement('div');
+                    c.style.position = 'fixed';
+                    c.style.width = '10px';
+                    c.style.height = '10px';
+                    c.style.borderRadius = '3px';
+                    c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    c.style.left = Math.random() * window.innerWidth + 'px';
+                    c.style.top = '-10px';
+                    c.style.opacity = '1';
+                    c.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                    c.style.transition = 'all 2.5s ease-out';
+                    c.style.zIndex = '999';
+                    document.body.appendChild(c);
+
+                    setTimeout(() => {
+                        c.style.top = window.innerHeight + 'px';
+                        c.style.opacity = '0';
+                        c.style.transform = 'rotate(' + (Math.random() * 720) + 'deg)';
+                    }, 50);
+
+                    setTimeout(() => c.remove(), 2600);
+                }, i * 25);
+            }
+        }
     </script>
 </body>
 </html>

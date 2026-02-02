@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Added responsive viewport with max-scale -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Will You Be My Valentine? 💕</title>
     <style>
         :root {
@@ -21,6 +22,12 @@
             box-sizing: border-box;
         }
 
+        /* Make page fit viewport and avoid outer scrolling */
+        html, body {
+            height: 100vh;
+            overflow: hidden;
+        }
+
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
             background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
@@ -28,7 +35,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
             position: relative;
         }
 
@@ -61,13 +67,17 @@
         .container {
             background: var(--color-white);
             border-radius: 30px;
-            padding: 60px 40px;
+            padding: 40px 30px; /* slightly reduced padding */
             text-align: center;
             box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
             max-width: 600px;
             width: 90%;
             position: relative;
             z-index: 10;
+
+            /* Key: keep content within viewport */
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         h1 {
@@ -165,6 +175,8 @@
             max-width: 500px;
             width: 90%;
             animation: modalSlideIn 0.5s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         @keyframes modalSlideIn {
@@ -219,7 +231,8 @@
                 font-size: 1.4em;
             }
             .container {
-                padding: 40px 30px;
+                padding: 30px 20px;
+                max-height: 90vh;
             }
         }
     </style>
@@ -386,4 +399,3 @@
     </script>
 </body>
 </html>
-

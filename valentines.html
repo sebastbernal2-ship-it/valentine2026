@@ -302,7 +302,6 @@
             pointer-events: none;
         }
 
-        /* hide internal content while locked */
         .locked .letter-main,
         .locked > div:not(.letter-lock-overlay) {
             visibility: hidden;
@@ -426,6 +425,7 @@
             position: relative;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             margin-bottom: 15px;
+            overflow: hidden;
         }
 
         .envelope-flap {
@@ -436,6 +436,12 @@
             height: 60%;
             background: linear-gradient(135deg, #ffc0dd 0%, #ff9ad1 100%);
             clip-path: polygon(0 0, 50% 100%, 100% 0);
+            transform-origin: top center;
+            transition: transform 0.5s ease;
+        }
+
+        .envelope-flap.open {
+            transform: rotateX(180deg);
         }
 
         .envelope-label {
@@ -643,12 +649,10 @@
         const letterClosed = document.getElementById('letterClosed');
         const letterOpen = document.getElementById('letterOpen');
 
-        let currentMode = null;
         let tacoDone = false;
         let sushiDone = false;
 
         function enterMode(mode) {
-            currentMode = mode;
             selectionScreen.style.display = 'none';
             tacoScreen.style.display = 'none';
             sushiScreen.style.display = 'none';
@@ -664,11 +668,8 @@
         }
 
         function goBack() {
-            currentMode = null;
-            tacoScreen.style.display = 'none';
-            sushiScreen.style.display = 'none';
-            letterScreen.style.display = 'none';
-            selectionScreen.style.display = 'flex';
+            // full reset so all text, counters, and scales go back to fresh
+            window.location.reload();
         }
 
         function checkUnlock() {
@@ -679,8 +680,13 @@
         }
 
         function openLetter() {
-            letterClosed.style.display = 'none';
-            letterOpen.style.display = 'block';
+            const flap = document.querySelector('.envelope-flap');
+            flap.classList.add('open');
+
+            setTimeout(() => {
+                letterClosed.style.display = 'none';
+                letterOpen.style.display = 'block';
+            }, 500);
         }
 
         function showLetterModal() {

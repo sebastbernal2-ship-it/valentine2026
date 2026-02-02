@@ -239,10 +239,79 @@
             z-index: 10;
         }
 
+        /* Locked third option */
+
+        .letter-wrapper {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 380px;
+        }
+
+        .letter-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 12px 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .letter-main {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .letter-emoji {
+            font-size: 28px;
+        }
+
+        .letter-text-main {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #c92a2a;
+        }
+
+        .letter-text-sub {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .letter-lock-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9em;
+            color: #999;
+            font-weight: 600;
+        }
+
+        .locked {
+            filter: blur(1px);
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .letter-wrapper {
+                bottom: 12px;
+            }
+        }
+
         /* Taco mode background (replace URL) */
 
         .taco-bg {
-            background-image: url("https://glebekitchen.com/wp-content/uploads/2020/12/birriatacotopscene.jpg");
+            background-image: url("https://YOUR-TACO-IMAGE-URL-HERE.jpg");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -275,7 +344,7 @@
         /* Sushi mode background (replace URL) */
 
         .sushi-bg {
-            background-image: url("https://www.flypeachpie.com/wp-content/uploads/2018/07/31203735_1834072566659465_7259088049907171328_n.jpg");
+            background-image: url("https://YOUR-SUSHI-IMAGE-URL-HERE.jpg");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -317,6 +386,96 @@
             cursor: pointer;
         }
 
+        /* Letter mode */
+
+        .letter-bg {
+            background-image: url("https://YOUR-LETTER-IMAGE-URL-HERE.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .letter-card-big {
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            padding: 20px 20px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 18px 45px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+
+        .letter-closed {
+            cursor: pointer;
+            padding: 25px 15px;
+        }
+
+        .envelope {
+            width: 100%;
+            height: 120px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffd1e8 100%);
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            margin-bottom: 15px;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(135deg, #ffc0dd 0%, #ff9ad1 100%);
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+        }
+
+        .envelope-label {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9em;
+            color: #7a0038;
+        }
+
+        .letter-open {
+            display: none;
+            animation: fadeUp 0.4s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .letter-body-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #c92a2a;
+            margin-bottom: 10px;
+        }
+
+        .letter-body-text {
+            font-size: 1em;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .lily {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.8;
+        }
+
+        .lily-top-left { top: 6px; left: 6px; }
+        .lily-top-right { top: 6px; right: 6px; }
+        .lily-bottom-left { bottom: 6px; left: 6px; }
+        .lily-bottom-right { bottom: 6px; right: 6px; }
+
         @media (max-width: 768px) {
             .choice-emoji { font-size: 60px; }
             .choice-title { font-size: 1.6em; }
@@ -342,6 +501,23 @@
                 <div class="choice-emoji">🍣</div>
                 <div class="choice-title">Sushi</div>
                 <div class="choice-sub">For the raw romance 🥢</div>
+            </div>
+        </div>
+
+        <!-- Locked 3rd option -->
+        <div class="letter-wrapper">
+            <div id="letterCard" class="letter-card locked" onclick="enterMode('letter')">
+                <div class="letter-main">
+                    <div class="letter-emoji">💌</div>
+                    <div>
+                        <div class="letter-text-main">Secret Letter</div>
+                        <div class="letter-text-sub">The real question, just for you</div>
+                    </div>
+                </div>
+                <div>🪷</div>
+                <div id="letterLockOverlay" class="letter-lock-overlay">
+                    <span>🔒 Unlock by choosing both sides first</span>
+                </div>
             </div>
         </div>
     </div>
@@ -394,6 +570,46 @@
         </div>
     </div>
 
+    <!-- Letter mode -->
+    <div id="letterScreen" style="display:none;">
+        <div class="center-wrapper letter-bg">
+            <div class="letter-card-big">
+                <button class="back-btn" onclick="goBack()">← Back</button>
+
+                <!-- lilies in corners -->
+                <div class="lily lily-top-left">🪷</div>
+                <div class="lily lily-top-right">🪷</div>
+                <div class="lily lily-bottom-left">🪷</div>
+                <div class="lily lily-bottom-right">🪷</div>
+
+                <!-- Closed state -->
+                <div id="letterClosed" class="letter-closed" onclick="openLetter()">
+                    <div class="envelope">
+                        <div class="envelope-flap"></div>
+                        <div class="envelope-label">
+                            To: [HER NAME]<br>
+                            From: [YOUR NAME]
+                        </div>
+                    </div>
+                    <p style="font-size:0.95em;color:#555;">
+                        Tap to open your Valentine letter 💌
+                    </p>
+                </div>
+
+                <!-- Open state -->
+                <div id="letterOpen" class="letter-open">
+                    <div class="letter-body-title">Will you be my Valentine? 💖</div>
+                    <div class="letter-body-text">
+                        [YOUR HEARTFELT SENTENCE(S) GO HERE]
+                    </div>
+                    <div class="buttons">
+                        <button class="btn btn-yes" onclick="showLetterModal()">Yes 💕</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Shared success modal -->
     <div class="modal" id="successModal">
         <div class="modal-content" id="modalContent">
@@ -409,32 +625,67 @@
         const selectionScreen = document.getElementById('selectionScreen');
         const tacoScreen = document.getElementById('tacoScreen');
         const sushiScreen = document.getElementById('sushiScreen');
+        const letterScreen = document.getElementById('letterScreen');
         const modal = document.getElementById('successModal');
         const modalEmoji = document.getElementById('modalEmoji');
         const modalTitle = document.getElementById('modalTitle');
         const modalLine1 = document.getElementById('modalLine1');
         const modalLine2 = document.getElementById('modalLine2');
         const modalEmojiBottom = document.getElementById('modalEmojiBottom');
+        const letterCard = document.getElementById('letterCard');
+        const letterLockOverlay = document.getElementById('letterLockOverlay');
+        const letterClosed = document.getElementById('letterClosed');
+        const letterOpen = document.getElementById('letterOpen');
 
         let currentMode = null;
+        let tacoDone = false;
+        let sushiDone = false;
 
         function enterMode(mode) {
             currentMode = mode;
             selectionScreen.style.display = 'none';
+            tacoScreen.style.display = 'none';
+            sushiScreen.style.display = 'none';
+            letterScreen.style.display = 'none';
+
             if (mode === 'taco') {
                 tacoScreen.style.display = 'block';
-                sushiScreen.style.display = 'none';
-            } else {
+            } else if (mode === 'sushi') {
                 sushiScreen.style.display = 'block';
-                tacoScreen.style.display = 'none';
+            } else if (mode === 'letter') {
+                letterScreen.style.display = 'block';
             }
         }
 
         function goBack() {
+            // Full reset is overkill here; just go back to menu
             currentMode = null;
             tacoScreen.style.display = 'none';
             sushiScreen.style.display = 'none';
+            letterScreen.style.display = 'none';
             selectionScreen.style.display = 'flex';
+        }
+
+        function checkUnlock() {
+            if (tacoDone && sushiDone) {
+                letterCard.classList.remove('locked');
+                letterLockOverlay.style.display = 'none';
+            }
+        }
+
+        function openLetter() {
+            letterClosed.style.display = 'none';
+            letterOpen.style.display = 'block';
+        }
+
+        function showLetterModal() {
+            modalEmoji.textContent = '🪷💕💌';
+            modalTitle.textContent = 'Thank you for saying yes 💖';
+            modalLine1.textContent = "You mean the world to me.";
+            modalLine2.textContent = "I’m so grateful I get to spend Valentine’s Day with you.";
+            modalEmojiBottom.textContent = '🪷💗🪷';
+            modal.style.display = 'flex';
+            createConfetti(['#ffc9e9', '#ffb3d9', '#ff6b9c', '#ffe5f1']);
         }
 
         // Taco logic
@@ -456,6 +707,8 @@
             modalEmojiBottom.textContent = '🧀🌮💖';
             modal.style.display = 'flex';
             createConfetti(['#ff9a3c', '#ffd8a8', '#e85d04', '#ff6b35']);
+            tacoDone = true;
+            checkUnlock();
         });
 
         tacoNo.addEventListener('click', (e) => {
@@ -465,7 +718,7 @@
             tacoAttempts.classList.add('show');
 
             tacoNoScale *= 0.75;
-            tacoYesScale = Math.min(tacoYesScale * 1.15, 1.7);  // cap growth
+            tacoYesScale = Math.min(tacoYesScale * 1.15, 1.7);
             tacoNo.style.transform = `scale(${tacoNoScale})`;
             tacoYes.style.transform = `scale(${tacoYesScale})`;
 
@@ -506,6 +759,8 @@
             modalEmojiBottom.textContent = '🍣💘🌊';
             modal.style.display = 'flex';
             createConfetti(['#ff6b6b', '#ffc9c9', '#c92a2a', '#ffa8a8']);
+            sushiDone = true;
+            checkUnlock();
         });
 
         sushiNo.addEventListener('click', (e) => {
@@ -515,7 +770,7 @@
             sushiAttempts.classList.add('show');
 
             sushiNoScale *= 0.75;
-            sushiYesScale = Math.min(sushiYesScale * 1.15, 1.7);  // cap growth
+            sushiYesScale = Math.min(sushiYesScale * 1.15, 1.7);
             sushiNo.style.transform = `scale(${sushiNoScale})`;
             sushiYes.style.transform = `scale(${sushiYesScale})`;
 

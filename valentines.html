@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Added responsive viewport with max-scale -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Will You Be My Valentine? 💕</title>
     <style>
         :root {
@@ -22,16 +21,16 @@
             box-sizing: border-box;
         }
 
-        /* Make page fit viewport and avoid outer scrolling */
         html, body {
             height: 100vh;
-            overflow: hidden;
+            width: 100vw;
+            overflow: hidden; /* NO scrolling allowed */
+            position: fixed; /* Lock position */
         }
 
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
             background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
-            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -66,30 +65,27 @@
 
         .container {
             background: var(--color-white);
-            border-radius: 30px;
-            padding: 40px 30px; /* slightly reduced padding */
+            border-radius: 25px;
+            padding: 25px 20px; /* Reduced padding */
             text-align: center;
-            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
-            max-width: 600px;
+            box-shadow: 0 15px 50px rgba(255, 105, 180, 0.3);
+            max-width: 350px; /* Smaller max width for mobile */
             width: 90%;
             position: relative;
             z-index: 10;
-
-            /* Key: keep content within viewport */
-            max-height: 90vh;
-            overflow-y: auto;
+            overflow: hidden; /* No scrolling */
         }
 
         h1 {
-            font-size: 2.5em;
+            font-size: 1.6em; /* Smaller for mobile */
             color: var(--color-pink-dark);
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.2);
         }
 
         .heart-icon {
-            font-size: 80px;
-            margin: 20px 0;
+            font-size: 50px; /* Smaller */
+            margin: 10px 0;
             animation: heartbeat 1.5s infinite;
         }
 
@@ -106,23 +102,23 @@
         }
 
         .question {
-            font-size: 1.8em;
+            font-size: 1.2em; /* Smaller */
             color: var(--color-text);
-            margin: 30px 0;
+            margin: 15px 0;
             font-weight: 600;
         }
 
         .buttons {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             justify-content: center;
-            margin-top: 40px;
+            margin-top: 20px; /* Reduced */
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 15px 40px;
-            font-size: 1.2em;
+            padding: 12px 30px; /* Smaller buttons */
+            font-size: 1em; /* Smaller font */
             border: none;
             border-radius: 50px;
             cursor: pointer;
@@ -134,12 +130,12 @@
         .btn-yes {
             background: linear-gradient(135deg, var(--color-pink) 0%, var(--color-red) 100%);
             color: var(--color-white);
-            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.4);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
         }
 
         .btn-yes:hover {
             transform: scale(1.1);
-            box-shadow: 0 8px 30px rgba(255, 105, 180, 0.6);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.6);
         }
 
         .btn-no {
@@ -165,18 +161,18 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
+            overflow: hidden; /* No scrolling */
         }
 
         .modal-content {
             background: var(--color-white);
-            padding: 50px;
-            border-radius: 30px;
+            padding: 25px 20px; /* Reduced padding */
+            border-radius: 25px;
             text-align: center;
-            max-width: 500px;
-            width: 90%;
+            max-width: 320px; /* Smaller */
+            width: 85%;
             animation: modalSlideIn 0.5s ease;
-            max-height: 90vh;
-            overflow-y: auto;
+            overflow: hidden; /* No scrolling */
         }
 
         @keyframes modalSlideIn {
@@ -191,28 +187,29 @@
         }
 
         .modal h2 {
-            font-size: 2.5em;
+            font-size: 1.8em; /* Smaller */
             color: var(--color-pink-dark);
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .modal p {
-            font-size: 1.3em;
+            font-size: 1em; /* Smaller */
             color: var(--color-text);
-            line-height: 1.6;
+            line-height: 1.4;
+            margin: 8px 0; /* Reduced */
         }
 
         .celebration {
-            font-size: 60px;
-            margin: 20px 0;
+            font-size: 35px; /* Smaller */
+            margin: 10px 0;
         }
 
         /* Counter display */
         .attempt-counter {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 0.9em;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8em;
             color: var(--color-pink);
             opacity: 0;
             transition: opacity 0.3s;
@@ -222,17 +219,37 @@
             opacity: 1;
         }
 
-        /* Responsive design */
-        @media (max-width: 600px) {
+        /* Responsive for larger screens - allow slightly bigger */
+        @media (min-width: 600px) {
+            .container {
+                max-width: 450px;
+                padding: 35px 30px;
+            }
             h1 {
                 font-size: 2em;
             }
-            .question {
-                font-size: 1.4em;
+            .heart-icon {
+                font-size: 70px;
             }
-            .container {
-                padding: 30px 20px;
-                max-height: 90vh;
+            .question {
+                font-size: 1.5em;
+            }
+            .btn {
+                padding: 15px 40px;
+                font-size: 1.2em;
+            }
+            .modal-content {
+                max-width: 400px;
+                padding: 40px;
+            }
+            .modal h2 {
+                font-size: 2.2em;
+            }
+            .modal p {
+                font-size: 1.2em;
+            }
+            .celebration {
+                font-size: 50px;
             }
         }
     </style>
@@ -265,7 +282,7 @@
             <div class="celebration">🎉💕🎊</div>
             <h2>Yay! 💖</h2>
             <p>You just made me the happiest person alive!</p>
-            <p style="margin-top: 20px;">I can't wait to spend Valentine's Day with you! ❤️</p>
+            <p style="margin-top: 15px;">I can't wait to spend Valentine's Day with you! ❤️</p>
             <div class="celebration">💐🌹💝</div>
         </div>
     </div>
@@ -307,7 +324,6 @@
         // Yes button - show success modal
         yesBtn.addEventListener('click', () => {
             modal.style.display = 'flex';
-            // Add confetti effect
             createConfetti();
         });
 
@@ -330,8 +346,8 @@
             if (window.innerWidth > 600) {
                 const container = document.querySelector('.container');
                 const containerRect = container.getBoundingClientRect();
-                const maxX = containerRect.width - noBtn.offsetWidth - 100;
-                const maxY = containerRect.height - noBtn.offsetHeight - 100;
+                const maxX = containerRect.width - noBtn.offsetWidth - 80;
+                const maxY = containerRect.height - noBtn.offsetHeight - 80;
                 
                 const randomX = Math.random() * maxX;
                 const randomY = Math.random() * maxY;

@@ -51,7 +51,7 @@
             max-width: 360px;
             width: 90%;
             position: relative;
-            overflow: visible; /* allow Yes button to grow slightly outside */
+            overflow: visible;
         }
 
         h1 {
@@ -287,18 +287,25 @@
         .letter-lock-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.96);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            font-size: 0.9em;
-            color: #999;
+            font-size: 0.95em;
+            color: #555;
             font-weight: 600;
+            z-index: 2;
         }
 
         .locked {
             pointer-events: none;
+        }
+
+        /* hide internal content while locked */
+        .locked .letter-main,
+        .locked > div:not(.letter-lock-overlay) {
+            visibility: hidden;
         }
 
         @media (max-width: 768px) {
@@ -657,7 +664,6 @@
         }
 
         function goBack() {
-            // Full reset is overkill here; just go back to menu
             currentMode = null;
             tacoScreen.style.display = 'none';
             sushiScreen.style.display = 'none';
@@ -796,7 +802,6 @@
             modal.style.display = 'none';
         });
 
-        // Simple confetti generator
         function createConfetti(colors) {
             for (let i = 0; i < 60; i++) {
                 setTimeout(() => {

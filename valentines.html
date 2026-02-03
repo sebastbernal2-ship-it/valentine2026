@@ -152,6 +152,64 @@
             margin: 8px 0;
         }
 
+        /* Garfield splash screen */
+
+        #splashScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: radial-gradient(circle at top, #ffd27f 0, #f7a93b 40%, #ff8c00 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #3b2400;
+            font-family: 'Georgia', serif;
+        }
+
+        .splash-title {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .splash-sub {
+            font-size: 1em;
+            max-width: 260px;
+            margin-bottom: 25px;
+        }
+
+        .splash-garfield {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .splash-btn {
+            margin-top: 10px;
+            padding: 12px 30px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ffb347 0%, #ff7b00 100%);
+            color: #fffdf5;
+            box-shadow: 0 8px 20px rgba(120, 63, 4, 0.4);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .splash-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(120, 63, 4, 0.5);
+        }
+
+        .splash-note {
+            font-size: 0.8em;
+            opacity: 0.8;
+            margin-top: 12px;
+        }
+
         /* Selection screen */
 
         .selection-screen {
@@ -498,6 +556,17 @@
     </style>
 </head>
 <body>
+    <!-- Garfield-style splash screen -->
+    <div id="splashScreen">
+        <div class="splash-garfield">😼</div>
+        <div class="splash-title">Garfield Meal Planner</div>
+        <div class="splash-sub">
+            Track all your lasagna, naps, and Mondays in one place.
+        </div>
+        <button class="splash-btn" onclick="startApp()">Start</button>
+        <div class="splash-note">Loading catnip modules…</div>
+    </div>
+
     <!-- Selection screen -->
     <div id="selectionScreen" class="selection-screen">
         <div class="choose-label">Choose your flavor of love 💕</div>
@@ -648,6 +717,19 @@
         const letterLockOverlay = document.getElementById('letterLockOverlay');
         const letterClosed = document.getElementById('letterClosed');
         const letterOpen = document.getElementById('letterOpen');
+
+        // hide main app until splash is dismissed
+        selectionScreen.style.display = 'none';
+
+        function startApp() {
+            const splash = document.getElementById('splashScreen');
+            splash.style.transition = 'opacity 0.5s ease';
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                selectionScreen.style.display = 'flex';
+            }, 500);
+        }
 
         // Taco refs
         const tacoYes = document.getElementById('tacoYes');

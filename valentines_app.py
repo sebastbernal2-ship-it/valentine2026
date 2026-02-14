@@ -14,4 +14,4 @@ html_path = current_dir / "valentines.html"
 with open(html_path, "r", encoding="utf-8") as f:
     html_content = f.read()
 
-components.html(html_content, height=500, scrolling=False)
+components.html(html_content, height=800, scrolling=False)

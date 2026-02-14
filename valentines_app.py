@@ -3,8 +3,8 @@ import streamlit.components.v1 as components
 from pathlib import Path
 
 st.set_page_config(
-    page_title="Will You Be My Valentine? 💕",
-    page_icon="💖",
+    page_title="Garfield Meal Planner",
+    page_icon="🐈",
     layout="centered"
 )
 

@@ -1,953 +1,961 @@
-import streamlit as st
-import streamlit.components.v1 as components
-
-st.set_page_config(page_title="Garfield App?", layout="wide")
-
-st.markdown(
-    """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Garfield App?</title>
     <style>
-        .block-container {
-            padding-top: 0rem;
-            padding-bottom: 0rem;
+        :root {
+            --color-pink: #ff69b4;
+            --color-pink-light: #ffb3d9;
+            --color-pink-dark: #ff1493;
+            --color-red: #ff0066;
+            --color-white: #ffffff;
+            --color-cream: #fff5f7;
+            --color-text: #2d2d2d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
+            position: relative;
+        }
+
+        .center-wrapper {
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 15px 0 15px;
+        }
+
+        .card {
+            background: var(--color-white);
+            border-radius: 25px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+            max-width: 360px;
+            width: 90%;
+            position: relative;
+            overflow: visible;
+        }
+
+        h1 {
+            font-size: 1.6em;
+            margin-bottom: 10px;
+        }
+
+        .question {
+            font-size: 1.3em;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            font-family: 'Georgia', serif;
+            transform-origin: center center;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, var(--color-pink) 0%, var(--color-red) 100%);
+            color: var(--color-white);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.6);
+        }
+
+        .btn-no {
+            background: var(--color-cream);
+            color: var(--color-text);
+            border: 2px solid var(--color-pink-light);
+        }
+
+        .attempt-counter {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            font-size: 0.8em;
+            color: var(--color-pink);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .attempt-counter.show {
+            opacity: 1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 25px 20px;
+            border-radius: 25px;
+            text-align: center;
+            max-width: 320px;
+            width: 85%;
+        }
+
+        .modal h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .modal p {
+            font-size: 1em;
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+
+        .celebration {
+            font-size: 40px;
+            margin: 8px 0;
+        }
+
+        /* Garfield splash screen */
+
+        #splashScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: radial-gradient(circle at top, #ffd27f 0, #f7a93b 40%, #ff8c00 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #3b2400;
+            font-family: 'Georgia', serif;
+        }
+
+        .splash-title {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .splash-sub {
+            font-size: 1em;
+            max-width: 260px;
+            margin-bottom: 25px;
+        }
+
+        .splash-garfield {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .splash-btn {
+            margin-top: 10px;
+            padding: 12px 30px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ffb347 0%, #ff7b00 100%);
+            color: #fffdf5;
+            box-shadow: 0 8px 20px rgba(120, 63, 4, 0.4);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .splash-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(120, 63, 4, 0.5);
+        }
+
+        .splash-note {
+            font-size: 0.8em;
+            opacity: 0.8;
+            margin-top: 12px;
+        }
+
+        /* Selection screen */
+
+        .selection-screen {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            position: relative;
+        }
+
+        .half {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .half::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0.2;
+        }
+
+        .half-left {
+            background: linear-gradient(135deg, #ffebc7 0%, #ffb347 100%);
+        }
+
+        .half-left::before {
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(255,255,255,0.6) 0, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.4) 0, transparent 45%);
+        }
+
+        .half-right {
+            background: linear-gradient(135deg, #ffe0e0 0%, #ff6b6b 100%);
+        }
+
+        .half-right::before {
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.6) 0, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.4) 0, transparent 45%);
+        }
+
+        .half:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+        }
+
+        .choice-content {
+            position: relative;
+            text-align: center;
+            color: #fff;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+            padding: 10px;
+        }
+
+        .choice-emoji {
+            font-size: 80px;
+            margin-bottom: 10px;
+        }
+
+        .choice-title {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .choice-sub {
+            font-size: 1.1em;
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+
+        .choose-label {
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #ff1493;
+            text-shadow: 0 0 8px rgba(255,255,255,0.9);
+            z-index: 10;
+        }
+
+        /* Locked third option */
+
+        .letter-wrapper {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 380px;
+        }
+
+        .letter-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 12px 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .letter-main {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .letter-emoji {
+            font-size: 14px;
+        }
+
+        .letter-text-main {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #c92a2a;
+        }
+
+        .letter-text-sub {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .letter-lock-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.96);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95em;
+            color: #555;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .locked {
+            pointer-events: none;
+        }
+
+        .locked .letter-main,
+        .locked > div:not(.letter-lock-overlay) {
+            visibility: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .letter-wrapper {
+                bottom: 12px;
+            }
+        }
+
+        /* Taco mode background (replace URL) */
+
+        .taco-bg {
+            background-image: url("https://YOUR-TACO-IMAGE-URL-HERE.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .taco-card {
+            border: 4px solid #ff9a3c;
+            box-shadow: 0 18px 50px rgba(255, 154, 60, 0.5);
+        }
+
+        .taco-h1 {
+            color: #e85d04;
+        }
+
+        .taco-pun {
+            font-size: 0.95em;
+            color: #ff6b35;
+            font-style: italic;
+            margin: 10px 0;
+            background: #fff3e6;
+            padding: 8px;
+            border-radius: 15px;
+        }
+
+        .taco-emoji-big {
+            font-size: 70px;
+            margin: 8px 0;
+        }
+
+        /* Sushi mode background (replace URL) */
+
+        .sushi-bg {
+            background-image: url("https://YOUR-SUSHI-IMAGE-URL-HERE.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .sushi-card {
+            border: 4px solid #ff6b6b;
+            box-shadow: 0 18px 50px rgba(201, 42, 42, 0.5);
+        }
+
+        .sushi-h1 {
+            color: #c92a2a;
+        }
+
+        .sushi-pun {
+            font-size: 0.95em;
+            color: #c92a2a;
+            font-style: italic;
+            margin: 10px 0;
+            background: #ffe5e5;
+            padding: 8px;
+            border-radius: 15px;
+        }
+
+        .sushi-emoji-big {
+            font-size: 70px;
+            margin: 8px 0;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 12px;
+            left: 14px;
+            font-size: 0.8em;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 6px 12px;
+            border: 1px solid #ffb3d9;
+            cursor: pointer;
+        }
+
+        /* Letter mode */
+
+        .letter-bg {
+            background-image: url("https://YOUR-LETTER-IMAGE-URL-HERE.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .letter-card-big {
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            padding: 24px 28px;
+            max-width: 660px;
+            width: 92%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 18px 45px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+
+        .letter-closed {
+            cursor: pointer;
+            padding: 25px 15px;
+        }
+
+        .envelope {
+            width: 100%;
+            height: 120px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffd1e8 100%);
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(135deg, #ffc0dd 0%, #ff9ad1 100%);
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            transform-origin: top center;
+            transition: transform 0.5s ease;
+        }
+
+        .envelope-flap.open {
+            transform: rotateX(180deg);
+        }
+
+        .envelope-label {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9em;
+            color: #7a0038;
+        }
+
+        .letter-open {
+            display: none;
+            animation: fadeUp 0.4s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .letter-body-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #c92a2a;
+            margin-bottom: 10px;
+        }
+
+        .letter-body-text {
+            font-size: 1em;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .lily {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.8;
+        }
+
+        .lily-top-left { top: 6px; left: 6px; }
+        .lily-top-right { top: 6px; right: 6px; }
+        .lily-bottom-left { bottom: 6px; left: 6px; }
+        .lily-bottom-right { bottom: 6px; right: 6px; }
+
+        @media (max-width: 768px) {
+            .choice-emoji { font-size: 60px; }
+            .choice-title { font-size: 1.6em; }
+            .choice-sub { font-size: 1em; }
+            .choose-label { font-size: 1.2em; }
+            .card { max-width: 340px; }
         }
     </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-html_inner = r"""
-<style>
-    :root {
-        --color-pink: #ff69b4;
-        --color-pink-light: #ffb3d9;
-        --color-pink-dark: #ff1493;
-        --color-red: #ff0066;
-        --color-white: #ffffff;
-        --color-cream: #fff5f7;
-        --color-text: #2d2d2d;
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    html, body {
-        min-height: 100vh;
-        width: 100vw;
-        overflow-x: hidden;
-        overflow-y: auto;
-    }
-    body {
-        font-family: 'Georgia', 'Times New Roman', serif;
-        background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
-        position: relative;
-    }
-
-    .center-wrapper {
-        min-height: 100vh;
-        width: 100vw;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        padding: 15px 0 15px;
-    }
-
-    .card {
-        background: var(--color-white);
-        border-radius: 25px;
-        padding: 25px 20px;
-        text-align: center;
-        box-shadow: 0 15px 50px rgba(0,0,0,0.15);
-        max-width: 360px;
-        width: 90%;
-        position: relative;
-        overflow: visible;
-    }
-
-    h1 {
-        font-size: 1.6em;
-        margin-bottom: 10px;
-    }
-
-    .question {
-        font-size: 1.3em;
-        margin: 15px 0;
-        font-weight: 600;
-    }
-
-    .buttons {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 20px;
-        flex-wrap: wrap;
-    }
-
-    .btn {
-        padding: 12px 30px;
-        font-size: 1em;
-        border: none;
-        border-radius: 50px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
-        font-family: 'Georgia', serif;
-        transform-origin: center center;
-    }
-
-    .btn-yes {
-        background: linear-gradient(135deg, var(--color-pink) 0%, var(--color-red) 100%);
-        color: var(--color-white);
-        box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
-    }
-
-    .btn-yes:hover {
-        transform: scale(1.08);
-        box-shadow: 0 8px 25px rgba(255, 105, 180, 0.6);
-    }
-
-    .btn-no {
-        background: var(--color-cream);
-        color: var(--color-text);
-        border: 2px solid var(--color-pink-light);
-    }
-
-    .attempt-counter {
-        position: absolute;
-        top: 10px;
-        right: 12px;
-        font-size: 0.8em;
-        color: var(--color-pink);
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-
-    .attempt-counter.show {
-        opacity: 1;
-    }
-
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0,0,0,0.7);
-        justify-content: center;
-        align-items: center;
-        z-index: 100;
-    }
-
-    .modal-content {
-        background: var(--color-white);
-        padding: 25px 20px;
-        border-radius: 25px;
-        text-align: center;
-        max-width: 320px;
-        width: 85%;
-    }
-
-    .modal h2 {
-        font-size: 1.8em;
-        margin-bottom: 10px;
-    }
-
-    .modal p {
-        font-size: 1em;
-        margin: 8px 0;
-        line-height: 1.4;
-    }
-
-    .celebration {
-        font-size: 40px;
-        margin: 8px 0;
-    }
-
-    /* Garfield splash screen */
-
-    #splashScreen {
-        position: fixed;
-        inset: 0;
-        z-index: 200;
-        background: radial-gradient(circle at top, #ffd27f 0, #f7a93b 40%, #ff8c00 100%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        color: #3b2400;
-        font-family: 'Georgia', serif;
-    }
-
-    .splash-title {
-        font-size: 2.2em;
-        font-weight: 700;
-        margin-bottom: 10px;
-    }
-
-    .splash-sub {
-        font-size: 1em;
-        max-width: 260px;
-        margin-bottom: 25px;
-    }
-
-    .splash-garfield {
-        font-size: 80px;
-        margin-bottom: 20px;
-    }
-
-    .splash-btn {
-        margin-top: 10px;
-        padding: 12px 30px;
-        border-radius: 999px;
-        border: none;
-        cursor: pointer;
-        font-size: 1em;
-        font-weight: 600;
-        background: linear-gradient(135deg, #ffb347 0%, #ff7b00 100%);
-        color: #fffdf5;
-        box-shadow: 0 8px 20px rgba(120, 63, 4, 0.4);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .splash-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 28px rgba(120, 63, 4, 0.5);
-    }
-
-    .splash-note {
-        font-size: 0.8em;
-        opacity: 0.8;
-        margin-top: 12px;
-    }
-
-    /* Selection screen */
-
-    .selection-screen {
-        height: 100vh;
-        width: 100vw;
-        display: flex;
-        position: relative;
-    }
-
-    .half {
-        flex: 1;
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .half::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        opacity: 0.2;
-    }
-
-    .half-left {
-        background: linear-gradient(135deg, #ffebc7 0%, #ffb347 100%);
-    }
-
-    .half-left::before {
-        background-image:
-            radial-gradient(circle at 20% 20%, rgba(255,255,255,0.6) 0, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(255,255,255,0.4) 0, transparent 45%);
-    }
-
-    .half-right {
-        background: linear-gradient(135deg, #ffe0e0 0%, #ff6b6b 100%);
-    }
-
-    .half-right::before {
-        background-image:
-            radial-gradient(circle at 20% 80%, rgba(255,255,255,0.6) 0, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(255,255,255,0.4) 0, transparent 45%);
-    }
-
-    .half:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 18px 40px rgba(0,0,0,0.25);
-    }
-
-    .choice-content {
-        position: relative;
-        text-align: center;
-        color: #fff;
-        text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
-        padding: 10px;
-    }
-
-    .choice-emoji {
-        font-size: 80px;
-        margin-bottom: 10px;
-    }
-
-    .choice-title {
-        font-size: 2em;
-        font-weight: bold;
-    }
-
-    .choice-sub {
-        font-size: 1.1em;
-        margin-top: 8px;
-        opacity: 0.9;
-    }
-
-    .choose-label {
-        position: absolute;
-        top: 18px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 1.4em;
-        font-weight: bold;
-        color: #ff1493;
-        text-shadow: 0 0 8px rgba(255,255,255,0.9);
-        z-index: 10;
-    }
-
-    /* Locked third option */
-
-    .letter-wrapper {
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-        max-width: 380px;
-    }
-
-    .letter-card {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 20px;
-        padding: 12px 18px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .letter-main {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .letter-emoji {
-        font-size: 14px;
-    }
-
-    .letter-text-main {
-        font-size: 1.1em;
-        font-weight: 600;
-        color: #c92a2a;
-    }
-
-    .letter-text-sub {
-        font-size: 0.9em;
-        color: #666;
-    }
-
-    .letter-lock-overlay {
-        position: absolute;
-        inset: 0;
-        background: rgba(255, 255, 255, 0.96);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        font-size: 0.95em;
-        color: #555;
-        font-weight: 600;
-        z-index: 2;
-    }
-
-    .locked {
-        pointer-events: none;
-    }
-
-    .locked .letter-main,
-    .locked > div:not(.letter-lock-overlay) {
-        visibility: hidden;
-    }
-
-    @media (max-width: 768px) {
-        .letter-wrapper {
-            bottom: 12px;
-        }
-    }
-
-    .taco-bg {
-        background-image: url("https://YOUR-TACO-IMAGE-URL-HERE.jpg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
-
-    .taco-card {
-        border: 4px solid #ff9a3c;
-        box-shadow: 0 18px 50px rgba(255, 154, 60, 0.5);
-    }
-
-    .taco-h1 {
-        color: #e85d04;
-    }
-
-    .taco-pun {
-        font-size: 0.95em;
-        color: #ff6b35;
-        font-style: italic;
-        margin: 10px 0;
-        background: #fff3e6;
-        padding: 8px;
-        border-radius: 15px;
-    }
-
-    .taco-emoji-big {
-        font-size: 70px;
-        margin: 8px 0;
-    }
-
-    .sushi-bg {
-        background-image: url("https://YOUR-SUSHI-IMAGE-URL-HERE.jpg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
-
-    .sushi-card {
-        border: 4px solid #ff6b6b;
-        box-shadow: 0 18px 50px rgba(201, 42, 42, 0.5);
-    }
-
-    .sushi-h1 {
-        color: #c92a2a;
-    }
-
-    .sushi-pun {
-        font-size: 0.95em;
-        color: #c92a2a;
-        font-style: italic;
-        margin: 10px 0;
-        background: #ffe5e5;
-        padding: 8px;
-        border-radius: 15px;
-    }
-
-    .sushi-emoji-big {
-        font-size: 70px;
-        margin: 8px 0;
-    }
-
-    .back-btn {
-        position: absolute;
-        top: 12px;
-        left: 14px;
-        font-size: 0.8em;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 20px;
-        padding: 6px 12px;
-        border: 1px solid #ffb3d9;
-        cursor: pointer;
-    }
-
-    .letter-bg {
-        background-image: url("https://YOUR-LETTER-IMAGE-URL-HERE.jpg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
-
-    .letter-card-big {
-        background: rgba(255,255,255,0.95);
-        border-radius: 25px;
-        padding: 24px 28px;
-        max-width: 660px;
-        width: 92%;
-        text-align: center;
-        position: relative;
-        box-shadow: 0 18px 45px rgba(0,0,0,0.25);
-        overflow: hidden;
-    }
-
-    .letter-closed {
-        cursor: pointer;
-        padding: 25px 15px;
-    }
-
-    .envelope {
-        width: 100%;
-        height: 120px;
-        border-radius: 10px;
-        background: linear-gradient(135deg, #ffeef8 0%, #ffd1e8 100%);
-        position: relative;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        margin-bottom: 15px;
-        overflow: hidden;
-    }
-
-    .envelope-flap {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 60%;
-        background: linear-gradient(135deg, #ffc0dd 0%, #ff9ad1 100%);
-        clip-path: polygon(0 0, 50% 100%, 100% 0);
-        transform-origin: top center;
-        transition: transform 0.5s ease;
-    }
-
-    .envelope-flap.open {
-        transform: rotateX(180deg);
-    }
-
-    .envelope-label {
-        position: absolute;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 0.9em;
-        color: #7a0038;
-    }
-
-    .letter-open {
-        display: none;
-        animation: fadeUp 0.4s ease-out;
-    }
-
-    @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .letter-body-title {
-        font-size: 1.4em;
-        font-weight: 700;
-        color: #c92a2a;
-        margin-bottom: 10px;
-    }
-
-    .letter-body-text {
-        font-size: 1em;
-        color: #333;
-        line-height: 1.5;
-        margin-bottom: 12px;
-    }
-
-    .lily {
-        position: absolute;
-        font-size: 24px;
-        opacity: 0.8;
-    }
-
-    .lily-top-left { top: 6px; left: 6px; }
-    .lily-top-right { top: 6px; right: 6px; }
-    .lily-bottom-left { bottom: 6px; left: 6px; }
-    .lily-bottom-right { bottom: 6px; right: 6px; }
-
-    @media (max-width: 768px) {
-        .choice-emoji { font-size: 60px; }
-        .choice-title { font-size: 1.6em; }
-        .choice-sub { font-size: 1em; }
-        .choose-label { font-size: 1.2em; }
-        .card { max-width: 340px; }
-    }
-</style>
-
-<!-- Garfield-style splash screen -->
-<div id="splashScreen">
-    <div class="splash-garfield">😼</div>
-    <div class="splash-title">Garfield Meal Planner</div>
-    <div class="splash-sub">
-        Track all your lasagna, naps, and Mondays in one place.
-    </div>
-    <button class="splash-btn" onclick="startApp()">Start</button>
-    <div class="splash-note">Loading catnip modules…</div>
-</div>
-
-<!-- Selection screen -->
-<div id="selectionScreen" class="selection-screen">
-    <div class="choose-label">Choose your flavor of love 💕</div>
-    <div class="half half-left" onclick="enterMode('taco')">
-        <div class="choice-content">
-            <div class="choice-emoji">🌮</div>
-            <div class="choice-title">Taco</div>
-            <div class="choice-sub">For the spicy lovers 🌶️</div>
+</head>
+<body>
+    <!-- Garfield-style splash screen -->
+    <div id="splashScreen">
+        <div class="splash-garfield">😼</div>
+        <div class="splash-title">Garfield Meal Planner</div>
+        <div class="splash-sub">
+            Track all your lasagna, naps, and Mondays in one place.
         </div>
-    </div>
-    <div class="half half-right" onclick="enterMode('sushi')">
-        <div class="choice-content">
-            <div class="choice-emoji">🍣</div>
-            <div class="choice-title">Sushi</div>
-            <div class="choice-sub">For the raw romance 🥢</div>
-        </div>
+        <button class="splash-btn" onclick="startApp()">Start</button>
+        <div class="splash-note">Loading catnip modules…</div>
     </div>
 
-    <div class="letter-wrapper">
-        <div id="letterCard" class="letter-card locked" onclick="enterMode('letter')">
-            <div class="letter-main">
-                <div class="letter-emoji">💌</div>
-                <div>
-                    <div class="letter-text-main">Secret Letter</div>
-                    <div class="letter-text-sub">The real question, just for you</div>
-                </div>
-            </div>
-            <div>🪷</div>
-            <div id="letterLockOverlay" class="letter-lock-overlay">
-                <span>🔒 Unlock by choosing both sides first</span>
+    <!-- Selection screen -->
+    <div id="selectionScreen" class="selection-screen">
+        <div class="choose-label">Choose your flavor of love 💕</div>
+        <div class="half half-left" onclick="enterMode('taco')">
+            <div class="choice-content">
+                <div class="choice-emoji">🌮</div>
+                <div class="choice-title">Taco</div>
+                <div class="choice-sub">For the spicy lovers 🌶️</div>
             </div>
         </div>
-    </div>
-</div>
-
-<!-- Taco mode -->
-<div id="tacoScreen" style="display:none;">
-    <div class="center-wrapper taco-bg">
-        <div class="card taco-card">
-            <button class="back-btn" onclick="goBack()">← Back</button>
-            <div class="attempt-counter" id="tacoAttempts">
-                No clicks: <span id="tacoNoCount">0</span> 🌮
-            </div>
-            <h1 class="taco-h1">Hey Hot Stuff! 🌶️</h1>
-            <div class="taco-emoji-big">🌮</div>
-            <p class="taco-pun">
-                "You've stolen a pizza my heart... but I really want to taco 'bout us." 🍕💛
-            </p>
-            <p class="question" id="tacoQuestion">
-                Will you taco 'bout being my Valentine? 🧀
-            </p>
-            <div class="buttons">
-                <button class="btn btn-yes" id="tacoYes">Yes! Lettuce be Valentines together!</button>
-                <button class="btn btn-no" id="tacoNo">No! I am nacho girl!</button>
+        <div class="half half-right" onclick="enterMode('sushi')">
+            <div class="choice-content">
+                <div class="choice-emoji">🍣</div>
+                <div class="choice-title">Sushi</div>
+                <div class="choice-sub">For the raw romance 🥢</div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Sushi mode -->
-<div id="sushiScreen" style="display:none;">
-    <div class="center-wrapper sushi-bg">
-        <div class="card sushi-card">
-            <button class="back-btn" onclick="goBack()">← Back</button>
-            <div class="attempt-counter" id="sushiAttempts">
-                No clicks: <span id="sushiNoCount">0</span> 🍣
-            </div>
-            <h1 class="sushi-h1">Hey Cutie Roll 💕</h1>
-            <div class="sushi-emoji-big">🍣</div>
-            <p class="sushi-pun">
-                "I’m soy into you... and I want our hearts (bellies) to roll on forever." 🥢
-            </p>
-            <p class="question" id="sushiQuestion">
-                Will you sushi my Valentine and roll with me? 💖
-            </p>
-            <div class="buttons">
-                <button class="btn btn-yes" id="sushiYes">Yes! I’m hooked 🐟</button>
-                <button class="btn btn-no" id="sushiNo">No..there's something fishy going on.</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Letter mode -->
-<div id="letterScreen" style="display:none;">
-    <div class="center-wrapper letter-bg">
-        <div class="letter-card-big">
-            <button class="back-btn" onclick="goBack()">← Back</button>
-
-            <div class="lily lily-top-left">🪷</div>
-            <div class="lily lily-top-right">🪷</div>
-            <div class="lily lily-bottom-left">🪷</div>
-            <div class="lily lily-bottom-right">🪷</div>
-
-            <div id="letterClosed" class="letter-closed" onclick="openLetter()">
-                <div class="envelope">
-                    <div class="envelope-flap"></div>
-                    <div class="envelope-label">
-                        To: Sephera<br>
-                        From: Sebastian
+        <!-- Locked 3rd option -->
+        <div class="letter-wrapper">
+            <div id="letterCard" class="letter-card locked" onclick="enterMode('letter')">
+                <div class="letter-main">
+                    <div class="letter-emoji">💌</div>
+                    <div>
+                        <div class="letter-text-main">Secret Letter</div>
+                        <div class="letter-text-sub">The real question, just for you</div>
                     </div>
                 </div>
-                <p style="font-size:0.95em;color:#555;">
-                    Tap to open your letter 💌
-                </p>
-            </div>
-
-            <div id="letterOpen" class="letter-open">
-                <div class="letter-body-title">Will you be my Valentine? 💖</div>
-                <div class="letter-body-text">
-                    [Bellooo if you're reading this then it's Friday or I suppose Fry-day if we keep with the food jokes. Sephera, thank you for always allowing me to continue growing my appetite for life, I know I'm always really occupied working on all sorts of things, and I really just hope that I can show you that my passion for building goes to more than just work, it goes to you as well, as the only certainty I could have is my hope for us, and I will always do what I can to build us up, build our relationship, and above all build a safe space for you, so that you can always speak to me, or even stay in silence, but just feel at home. Be my valentine everyday, I'll give you the care you need. If you ever grow your appetite for me, I will always be for you, to indulge you, to feed your heart and soul, to show you my taste, and for you to show me yours. Show me your eyes, show me your visions, if you dream with me I'll take you to the stars and back. Be my moon girl, I'll light you up. I'll keep it briefer since I'll let my actions speak (especially when you see what I made tomorrow) but I wanted to give you a more formalized valentines proposal. Last year I made you a garfield letter, now I make you this letter, and I think the time has come to ask. Sephera, will you be my Valentine?]
-                </div>
-                <div class="buttons">
-                    <button class="btn btn-yes" onclick="showLetterModal()">Yes 💕</button>
+                <div>🪷</div>
+                <div id="letterLockOverlay" class="letter-lock-overlay">
+                    <span>🔒 Unlock by choosing both sides first</span>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal" id="successModal">
-    <div class="modal-content" id="modalContent">
-        <div class="celebration" id="modalEmoji">🎉💕🎊</div>
-        <h2 id="modalTitle">Yahoo! 🫠</h2>
-        <p id="modalLine1">You just made me the happiest person alive!</p>
-        <p id="modalLine2">I can't wait to spend Valentine's Day with you! ❤️</p>
-        <div class="celebration" id="modalEmojiBottom">💐🌹💝</div>
+    <!-- Taco mode -->
+    <div id="tacoScreen" style="display:none;">
+        <div class="center-wrapper taco-bg">
+            <div class="card taco-card">
+                <button class="back-btn" onclick="goBack()">← Back</button>
+                <div class="attempt-counter" id="tacoAttempts">
+                    No clicks: <span id="tacoNoCount">0</span> 🌮
+                </div>
+                <h1 class="taco-h1">Hey Hot Stuff! 🌶️</h1>
+                <div class="taco-emoji-big">🌮</div>
+                <p class="taco-pun">
+                    "You've stolen a pizza my heart... but I really want to taco 'bout us." 🍕💛
+                </p>
+                <p class="question" id="tacoQuestion">
+                    Will you taco 'bout being my Valentine? 🧀
+                </p>
+                <div class="buttons">
+                    <button class="btn btn-yes" id="tacoYes">Yes! Lettuce be Valentines together!</button>
+                    <button class="btn btn-no" id="tacoNo">No! I am nacho girl!</button>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<script>
-    const selectionScreen = document.getElementById('selectionScreen');
-    const tacoScreen = document.getElementById('tacoScreen');
-    const sushiScreen = document.getElementById('sushiScreen');
-    const letterScreen = document.getElementById('letterScreen');
-    const modal = document.getElementById('successModal');
-    const modalEmoji = document.getElementById('modalEmoji');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalLine1 = document.getElementById('modalLine1');
-    const modalLine2 = document.getElementById('modalLine2');
-    const modalEmojiBottom = document.getElementById('modalEmojiBottom');
-    const letterCard = document.getElementById('letterCard');
-    const letterLockOverlay = document.getElementById('letterLockOverlay');
-    const letterClosed = document.getElementById('letterClosed');
-    const letterOpen = document.getElementById('letterOpen');
+    <!-- Sushi mode -->
+    <div id="sushiScreen" style="display:none;">
+        <div class="center-wrapper sushi-bg">
+            <div class="card sushi-card">
+                <button class="back-btn" onclick="goBack()">← Back</button>
+                <div class="attempt-counter" id="sushiAttempts">
+                    No clicks: <span id="sushiNoCount">0</span> 🍣
+                </div>
+                <h1 class="sushi-h1">Hey Cutie Roll 💕</h1>
+                <div class="sushi-emoji-big">🍣</div>
+                <p class="sushi-pun">
+                    "I’m soy into you... and I want our hearts (bellies) to roll on forever." 🥢
+                </p>
+                <p class="question" id="sushiQuestion">
+                    Will you sushi my Valentine and roll with me? 💖
+                </p>
+                <div class="buttons">
+                    <button class="btn btn-yes" id="sushiYes">Yes! I’m hooked 🐟</button>
+                    <button class="btn btn-no" id="sushiNo">No..there's something fishy going on.</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    selectionScreen.style.display = 'none';
+    <!-- Letter mode -->
+    <div id="letterScreen" style="display:none;">
+        <div class="center-wrapper letter-bg">
+            <div class="letter-card-big">
+                <button class="back-btn" onclick="goBack()">← Back</button>
 
-    function startApp() {
-        const splash = document.getElementById('splashScreen');
-        splash.style.transition = 'opacity 0.5s ease';
-        splash.style.opacity = '0';
-        setTimeout(() => {
-            splash.style.display = 'none';
-            selectionScreen.style.display = 'flex';
-        }, 500);
-    }
+                <!-- lilies in corners -->
+                <div class="lily lily-top-left">🪷</div>
+                <div class="lily lily-top-right">🪷</div>
+                <div class="lily lily-bottom-left">🪷</div>
+                <div class="lily lily-bottom-right">🪷</div>
 
-    const tacoYes = document.getElementById('tacoYes');
-    const tacoNo = document.getElementById('tacoNo');
-    const tacoQuestion = document.getElementById('tacoQuestion');
-    const tacoAttempts = document.getElementById('tacoAttempts');
-    const tacoNoCount = document.getElementById('tacoNoCount');
+                <!-- Closed state -->
+                <div id="letterClosed" class="letter-closed" onclick="openLetter()">
+                    <div class="envelope">
+                        <div class="envelope-flap"></div>
+                        <div class="envelope-label">
+                            To: Sephera<br>
+                            From: Sebastian
+                        </div>
+                    </div>
+                    <p style="font-size:0.95em;color:#555;">
+                        Tap to open your letter 💌
+                    </p>
+                </div>
 
-    const sushiYes = document.getElementById('sushiYes');
-    const sushiNo = document.getElementById('sushiNo');
-    const sushiQuestion = document.getElementById('sushiQuestion');
-    const sushiAttempts = document.getElementById('sushiAttempts');
-    const sushiNoCount = document.getElementById('sushiNoCount');
+                <!-- Open state -->
+                <div id="letterOpen" class="letter-open">
+                    <div class="letter-body-title">Will you be my Valentine? 💖</div>
+                    <div class="letter-body-text">
+                        [Bellooo if you're reading this then it's Friday or I suppose Fry-day if we keep with the food jokes. Sephera, thank you for always allowing me to continue growing my appetite for life, I know I'm always really occupied working on all sorts of things, and I really just hope that I can show you that my passion for building goes to more than just work, it goes to you as well, as the only certainty I could have is my hope for us, and I will always do what I can to build us up, build our relationship, and above all build a safe space for you, so that you can always speak to me, or even stay in silence, but just feel at home. Be my valentine everyday, I'll give you the care you need. If you ever grow your appetite for me, I will always be for you, to indulge you, to feed your heart and soul, to show you my taste, and for you to show me yours. Show me your eyes, show me your visions, if you dream with me I'll take you to the stars and back. Be my moon girl, I'll light you up. I'll keep it briefer since I'll let my actions speak (especially when you see what I made tomorrow) but I wanted to give you a more formalized valentines proposal. Last year I made you a garfield letter, now I make you this letter, and I think the time has come to ask. Sephera, will you be my Valentine?]
+                    </div>
+                    <div class="buttons">
+                        <button class="btn btn-yes" onclick="showLetterModal()">Yes 💕</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    let tacoDone = false;
-    let sushiDone = false;
+    <!-- Shared success modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content" id="modalContent">
+            <div class="celebration" id="modalEmoji">🎉💕🎊</div>
+            <h2 id="modalTitle">Yahoo! 🫠</h2>
+            <p id="modalLine1">You just made me the happiest person alive!</p>
+            <p id="modalLine2">I can't wait to spend Valentine's Day with you! ❤️</p>
+            <div class="celebration" id="modalEmojiBottom">💐🌹💝</div>
+        </div>
+    </div>
 
-    let tacoNoClicks = 0;
-    let tacoNoScale = 1;
-    let tacoYesScale = 1;
+    <script>
+        const selectionScreen = document.getElementById('selectionScreen');
+        const tacoScreen = document.getElementById('tacoScreen');
+        const sushiScreen = document.getElementById('sushiScreen');
+        const letterScreen = document.getElementById('letterScreen');
+        const modal = document.getElementById('successModal');
+        const modalEmoji = document.getElementById('modalEmoji');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalLine1 = document.getElementById('modalLine1');
+        const modalLine2 = document.getElementById('modalLine2');
+        const modalEmojiBottom = document.getElementById('modalEmojiBottom');
+        const letterCard = document.getElementById('letterCard');
+        const letterLockOverlay = document.getElementById('letterLockOverlay');
+        const letterClosed = document.getElementById('letterClosed');
+        const letterOpen = document.getElementById('letterOpen');
 
-    let sushiNoClicks = 0;
-    let sushiNoScale = 1;
-    let sushiYesScale = 1;
-
-    function enterMode(mode) {
+        // hide main app until splash is dismissed
         selectionScreen.style.display = 'none';
-        tacoScreen.style.display = 'none';
-        sushiScreen.style.display = 'none';
-        letterScreen.style.display = 'none';
 
-        if (mode === 'taco') {
-            tacoScreen.style.display = 'block';
-        } else if (mode === 'sushi') {
-            sushiScreen.style.display = 'block';
-        } else if (mode === 'letter') {
-            letterScreen.style.display = 'block';
-        }
-    }
-
-    function goBack() {
-        tacoScreen.style.display = 'none';
-        sushiScreen.style.display = 'none';
-        letterScreen.style.display = 'none';
-        selectionScreen.style.display = 'flex';
-
-        tacoNoClicks = 0;
-        tacoNoScale = 1;
-        tacoYesScale = 1;
-        tacoNoCount.textContent = '0';
-        tacoAttempts.classList.remove('show');
-        tacoNo.style.opacity = '1';
-        tacoNo.style.pointerEvents = 'auto';
-        tacoNo.style.transform = 'scale(1)';
-        tacoYes.style.transform = 'scale(1)';
-        tacoQuestion.textContent = "Will you taco 'bout being my Valentine? 🧀";
-
-        sushiNoClicks = 0;
-        sushiNoScale = 1;
-        sushiYesScale = 1;
-        sushiNoCount.textContent = '0';
-        sushiAttempts.classList.remove('show');
-        sushiNo.style.opacity = '1';
-        sushiNo.style.pointerEvents = 'auto';
-        sushiNo.style.transform = 'scale(1)';
-        sushiYes.style.transform = 'scale(1)';
-        sushiQuestion.textContent = "Will you sushi my Valentine and roll with me? 💖";
-
-        const flap = document.querySelector('.envelope-flap');
-        flap.classList.remove('open');
-        letterClosed.style.display = 'block';
-        letterOpen.style.display = 'none';
-    }
-
-    function checkUnlock() {
-        if (tacoDone && sushiDone) {
-            letterCard.classList.remove('locked');
-            letterLockOverlay.style.display = 'none';
-        }
-    }
-
-    function openLetter() {
-        const flap = document.querySelector('.envelope-flap');
-        flap.classList.add('open');
-
-        setTimeout(() => {
-            letterClosed.style.display = 'none';
-            letterOpen.style.display = 'block';
-        }, 500);
-    }
-
-    function showLetterModal() {
-        modalEmoji.textContent = '🪷💕💌';
-        modalTitle.textContent = 'Thank you for saying yes 💖';
-        modalLine1.textContent = "You mean the world to me.";
-        modalLine2.textContent = "I’m so grateful I get to spend Valentine’s Day with you.";
-        modalEmojiBottom.textContent = '🪷💗🪷';
-        modal.style.display = 'flex';
-        createConfetti(['#ffc9e9', '#ffb3d9', '#ff6b9c', '#ffe5f1']);
-    }
-
-    tacoYes.addEventListener('click', () => {
-        modalEmoji.textContent = '🌮💕🎉';
-        modalTitle.textContent = "Let's taco 'bout love! 🧡";
-        modalLine1.textContent = "You guac my world! 🥑";
-        modalLine2.textContent = "Can't wait to spice up Valentine's Day with you! 🌶️";
-        modalEmojiBottom.textContent = '🧀🌮💖';
-        modal.style.display = 'flex';
-        createConfetti(['#ff9a3c', '#ffd8a8', '#e85d04', '#ff6b35']);
-        tacoDone = true;
-        checkUnlock();
-    });
-
-    tacoNo.addEventListener('click', (e) => {
-        e.preventDefault();
-        tacoNoClicks++;
-        tacoNoCount.textContent = tacoNoClicks;
-        tacoAttempts.classList.add('show');
-
-        tacoNoScale *= 0.75;
-        tacoYesScale = Math.min(tacoYesScale * 1.15, 1.7);
-        tacoNo.style.transform = `scale(${tacoNoScale})`;
-        tacoYes.style.transform = `scale(${tacoYesScale})`;
-
-        const msgs = [
-            "Are you sure? 🥺",
-            "Don't be a sour cream! 🍋",
-            "I'm kind of a big dill! 🥒",
-            "Lettuce be together! 🥬",
-            "You’re breaking my shells! 🥚"
-        ];
-        if (tacoNoClicks <= msgs.length) {
-            tacoQuestion.textContent = msgs[tacoNoClicks - 1];
-        }
-
-        if (tacoNoClicks >= 4) {
-            tacoNo.style.opacity = '0';
-            tacoNo.style.pointerEvents = 'none';
-            tacoQuestion.textContent = "I knew you were salsa-mazing! 💃";
-        }
-    });
-
-    sushiYes.addEventListener('click', () => {
-        modalEmoji.textContent = '🍣💕🎉';
-        modalTitle.textContent = 'You maki miso happy! ';
-        modalLine1.textContent = "You're quite the roe-mantic, Eel always be your soymate. 🍥";
-        modalLine2.textContent = "Let’s roll through Valentine’s Day together! 🥢";
-        modalEmojiBottom.textContent = '🍣💘🌊';
-        modal.style.display = 'flex';
-        createConfetti(['#ff6b6b', '#ffc9c9', '#c92a2a', '#ffa8a8']);
-        sushiDone = true;
-        checkUnlock();
-    });
-
-    sushiNo.addEventListener('click', (e) => {
-        e.preventDefault();
-        sushiNoClicks++;
-        sushiNoCount.textContent = sushiNoClicks;
-        sushiAttempts.classList.add('show');
-
-        sushiNoScale *= 0.75;
-        sushiYesScale = Math.min(sushiYesScale * 1.15, 1.7);
-        sushiNo.style.transform = `scale(${sushiNoScale})`;
-        sushiYes.style.transform = `scale(${sushiYesScale})`;
-
-        const msgs = [
-            "Are you sure? 🥺",
-            "Don't miso cold to me 🥺",
-            "I’m on a roll here! 🍣",
-            "You’re my perfect catch 🐟",
-            "Let’s maki this official 💕"
-        ];
-        if (sushiNoClicks <= msgs.length) {
-            sushiQuestion.textContent = msgs[sushiNoClicks - 1];
-        }
-
-        if (sushiNoClicks >= 4) {
-            sushiNo.style.opacity = '0';
-            sushiNo.style.pointerEvents = 'none';
-            sushiQuestion.textContent = "I knew you’d roll with me! 💘";
-        }
-    });
-
-    modal.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-
-    function createConfetti(colors) {
-        for (let i = 0; i < 60; i++) {
+        function startApp() {
+            const splash = document.getElementById('splashScreen');
+            splash.style.transition = 'opacity 0.5s ease';
+            splash.style.opacity = '0';
             setTimeout(() => {
-                const c = document.createElement('div');
-                c.style.position = 'fixed';
-                c.style.width = '10px';
-                c.style.height = '10px';
-                c.style.borderRadius = '3px';
-                c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                c.style.left = Math.random() * window.innerWidth + 'px';
-                c.style.top = '-10px';
-                c.style.opacity = '1';
-                c.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
-                c.style.transition = 'all 2.5s ease-out';
-                c.style.zIndex = '999';
-                document.body.appendChild(c);
-
-                setTimeout(() => {
-                    c.style.top = window.innerHeight + 'px';
-                    c.style.opacity = '0';
-                    c.style.transform = 'rotate(' + (Math.random() * 720) + 'deg)';
-                }, 50);
-
-                setTimeout(() => c.remove(), 2600);
-            }, i * 25);
+                splash.style.display = 'none';
+                selectionScreen.style.display = 'flex';
+            }, 500);
         }
-    }
-</script>
-"""
 
-components.html(
-    html_inner,
-    height=900,
-    width=None,
-    scrolling=True,
-)
+        // Taco refs
+        const tacoYes = document.getElementById('tacoYes');
+        const tacoNo = document.getElementById('tacoNo');
+        const tacoQuestion = document.getElementById('tacoQuestion');
+        const tacoAttempts = document.getElementById('tacoAttempts');
+        const tacoNoCount = document.getElementById('tacoNoCount');
+
+        // Sushi refs
+        const sushiYes = document.getElementById('sushiYes');
+        const sushiNo = document.getElementById('sushiNo');
+        const sushiQuestion = document.getElementById('sushiQuestion');
+        const sushiAttempts = document.getElementById('sushiAttempts');
+        const sushiNoCount = document.getElementById('sushiNoCount');
+
+        let tacoDone = false;
+        let sushiDone = false;
+
+        let tacoNoClicks = 0;
+        let tacoNoScale = 1;
+        let tacoYesScale = 1;
+
+        let sushiNoClicks = 0;
+        let sushiNoScale = 1;
+        let sushiYesScale = 1;
+
+        function enterMode(mode) {
+            selectionScreen.style.display = 'none';
+            tacoScreen.style.display = 'none';
+            sushiScreen.style.display = 'none';
+            letterScreen.style.display = 'none';
+
+            if (mode === 'taco') {
+                tacoScreen.style.display = 'block';
+            } else if (mode === 'sushi') {
+                sushiScreen.style.display = 'block';
+            } else if (mode === 'letter') {
+                letterScreen.style.display = 'block';
+            }
+        }
+
+        function goBack() {
+            // Hide all modes
+            tacoScreen.style.display = 'none';
+            sushiScreen.style.display = 'none';
+            letterScreen.style.display = 'none';
+
+            // Show main menu
+            selectionScreen.style.display = 'flex';
+
+            // Reset Taco UI
+            tacoNoClicks = 0;
+            tacoNoScale = 1;
+            tacoYesScale = 1;
+            tacoNoCount.textContent = '0';
+            tacoAttempts.classList.remove('show');
+            tacoNo.style.opacity = '1';
+            tacoNo.style.pointerEvents = 'auto';
+            tacoNo.style.transform = 'scale(1)';
+            tacoYes.style.transform = 'scale(1)';
+            tacoQuestion.textContent = "Will you taco 'bout being my Valentine? 🧀";
+
+            // Reset Sushi UI
+            sushiNoClicks = 0;
+            sushiNoScale = 1;
+            sushiYesScale = 1;
+            sushiNoCount.textContent = '0';
+            sushiAttempts.classList.remove('show');
+            sushiNo.style.opacity = '1';
+            sushiNo.style.pointerEvents = 'auto';
+            sushiNo.style.transform = 'scale(1)';
+            sushiYes.style.transform = 'scale(1)';
+            sushiQuestion.textContent = "Will you sushi my Valentine and roll with me? 💖";
+
+            // Reset Letter UI (but keep unlock state)
+            const flap = document.querySelector('.envelope-flap');
+            flap.classList.remove('open');
+            letterClosed.style.display = 'block';
+            letterOpen.style.display = 'none';
+        }
+
+        function checkUnlock() {
+            if (tacoDone && sushiDone) {
+                letterCard.classList.remove('locked');
+                letterLockOverlay.style.display = 'none';
+            }
+        }
+
+        function openLetter() {
+            const flap = document.querySelector('.envelope-flap');
+            flap.classList.add('open');
+
+            setTimeout(() => {
+                letterClosed.style.display = 'none';
+                letterOpen.style.display = 'block';
+            }, 500);
+        }
+
+        function showLetterModal() {
+            modalEmoji.textContent = '🪷💕💌';
+            modalTitle.textContent = 'Thank you for saying yes 💖';
+            modalLine1.textContent = "You mean the world to me.";
+            modalLine2.textContent = "I’m so grateful I get to spend Valentine’s Day with you.";
+            modalEmojiBottom.textContent = '🪷💗🪷';
+            modal.style.display = 'flex';
+            createConfetti(['#ffc9e9', '#ffb3d9', '#ff6b9c', '#ffe5f1']);
+        }
+
+        // Taco logic
+        tacoYes.addEventListener('click', () => {
+            modalEmoji.textContent = '🌮💕🎉';
+            modalTitle.textContent = "Let's taco 'bout love! 🧡";
+            modalLine1.textContent = "You guac my world! 🥑";
+            modalLine2.textContent = "Can't wait to spice up Valentine's Day with you! 🌶️";
+            modalEmojiBottom.textContent = '🧀🌮💖';
+            modal.style.display = 'flex';
+            createConfetti(['#ff9a3c', '#ffd8a8', '#e85d04', '#ff6b35']);
+            tacoDone = true;
+            checkUnlock();
+        });
+
+        tacoNo.addEventListener('click', (e) => {
+            e.preventDefault();
+            tacoNoClicks++;
+            tacoNoCount.textContent = tacoNoClicks;
+            tacoAttempts.classList.add('show');
+
+            tacoNoScale *= 0.75;
+            tacoYesScale = Math.min(tacoYesScale * 1.15, 1.7);
+            tacoNo.style.transform = `scale(${tacoNoScale})`;
+            tacoYes.style.transform = `scale(${tacoYesScale})`;
+
+            const msgs = [
+                "Are you sure? 🥺",
+                "Don't be a sour cream! 🍋",
+                "I'm kind of a big dill! 🥒",
+                "Lettuce be together! 🥬",
+                "You’re breaking my shells! 🥚"
+            ];
+            if (tacoNoClicks <= msgs.length) {
+                tacoQuestion.textContent = msgs[tacoNoClicks - 1];
+            }
+
+            if (tacoNoClicks >= 4) {
+                tacoNo.style.opacity = '0';
+                tacoNo.style.pointerEvents = 'none';
+                tacoQuestion.textContent = "I knew you were salsa-mazing! 💃";
+            }
+        });
+
+        // Sushi logic
+        sushiYes.addEventListener('click', () => {
+            modalEmoji.textContent = '🍣💕🎉';
+            modalTitle.textContent = 'You maki miso happy! ';
+            modalLine1.textContent = "You're quite the roe-mantic, Eel always be your soymate. 🍥";
+            modalLine2.textContent = "Let’s roll through Valentine’s Day together! 🥢";
+            modalEmojiBottom.textContent = '🍣💘🌊';
+            modal.style.display = 'flex';
+            createConfetti(['#ff6b6b', '#ffc9c9', '#c92a2a', '#ffa8a8']);
+            sushiDone = true;
+            checkUnlock();
+        });
+
+        sushiNo.addEventListener('click', (e) => {
+            e.preventDefault();
+            sushiNoClicks++;
+            sushiNoCount.textContent = sushiNoClicks;
+            sushiAttempts.classList.add('show');
+
+            sushiNoScale *= 0.75;
+            sushiYesScale = Math.min(sushiYesScale * 1.15, 1.7);
+            sushiNo.style.transform = `scale(${sushiNoScale})`;
+            sushiYes.style.transform = `scale(${sushiYesScale})`;
+
+            const msgs = [
+                "Are you sure? 🥺",
+                "Don't miso cold to me 🥺",
+                "I’m on a roll here! 🍣",
+                "You’re my perfect catch 🐟",
+                "Let’s maki this official 💕"
+            ];
+            if (sushiNoClicks <= msgs.length) {
+                sushiQuestion.textContent = msgs[sushiNoClicks - 1];
+            }
+
+            if (sushiNoClicks >= 4) {
+                sushiNo.style.opacity = '0';
+                sushiNo.style.pointerEvents = 'none';
+                sushiQuestion.textContent = "I knew you’d roll with me! 💘";
+            }
+        });
+
+        // Shared modal close
+        modal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        function createConfetti(colors) {
+            for (let i = 0; i < 60; i++) {
+                setTimeout(() => {
+                    const c = document.createElement('div');
+                    c.style.position = 'fixed';
+                    c.style.width = '10px';
+                    c.style.height = '10px';
+                    c.style.borderRadius = '3px';
+                    c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    c.style.left = Math.random() * window.innerWidth + 'px';
+                    c.style.top = '-10px';
+                    c.style.opacity = '1';
+                    c.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                    c.style.transition = 'all 2.5s ease-out';
+                    c.style.zIndex = '999';
+                    document.body.appendChild(c);
+
+                    setTimeout(() => {
+                        c.style.top = window.innerHeight + 'px';
+                        c.style.opacity = '0';
+                        c.style.transform = 'rotate(' + (Math.random() * 720) + 'deg)';
+                    }, 50);
+
+                    setTimeout(() => c.remove(), 2600);
+                }, i * 25);
+            }
+        }
+    </script>
+</body>
+</html>

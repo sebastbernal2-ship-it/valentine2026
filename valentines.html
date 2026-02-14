@@ -23,11 +23,11 @@
         }
 
         html, body {
-            height: 100vh;
+            min-height: 100vh;   /* lets the pink background extend past the fold */
             width: 100vw;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
-
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
             background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
